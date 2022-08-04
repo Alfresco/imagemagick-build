@@ -5,6 +5,10 @@ if [ -z "$GITHUB_WORKSPACE" ]; then
     exit 1
 fi
 
-cp /root/rpmbuild/RPMS/x86_64/*.rpm "$GITHUB_WORKSPACE/"
+DEST_DIR=$GITHUB_WORKSPACE/rpms
 
-ls "$GITHUB_WORKSPACE"
+echo "Copying prebuilt RPMs to $DEST_DIR"
+mkdir -p "$DEST_DIR"
+cp /root/rpmbuild/RPMS/x86_64/*.rpm "$DEST_DIR"
+
+exit 0
