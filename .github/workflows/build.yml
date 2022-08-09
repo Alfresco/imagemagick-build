@@ -1,0 +1,26 @@
+name: Build
+
+on:
+  push:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build
+        uses: ./.github/actions/rockylinux-build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: rockylinux-rpms
+          path: rpms/*.rpm
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: rpms/*.rpm
