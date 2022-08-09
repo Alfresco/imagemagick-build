@@ -1,6 +1,6 @@
 FROM rockylinux:8
 
-ENV IMAGEMAGICK_VERSION=7.1.0-45
+ENV IMAGEMAGICK_VERSION=7.1.0-16
 
 # Build dependencies
 RUN dnf install -y epel-release git make wget 'dnf-command(config-manager)' && \
