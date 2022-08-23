@@ -36,5 +36,6 @@ jobs:
           classifier: rocky8
           files: rpms/ImageMagick-libs-7.1.0-16.x86_64.rpm
           classifiers: rocky8-libs
+          types: rpm
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
