@@ -6,6 +6,10 @@ on:
 permissions:
   contents: write
 
+env:
+  MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+  MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+
 jobs:
   build:
     name: Build
@@ -24,3 +28,15 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: rpms/*.rpm
+      - name: Release on nexus
+        if: startsWith(github.ref_name, 'OPSEXP-1693')
+        run: |
+          mkdir ~/.m2/
+          cp .github/settings.xml ~/.m2/
+          mvn deploy:deploy-file \
+            -DgroupId=org.imagemagick \
+            -DartifactId=imagemagick-distribution \
+            -Durl=https://nexus.alfresco.com/nexus/content/repositories/thirdparty/ \
+            -DrepositoryId=thirdparty \
+            -Dversion=7.1.0-16-test \
+            -Dfile=rpms/ImageMagick-7.1.0-16.x86_64.rpm
