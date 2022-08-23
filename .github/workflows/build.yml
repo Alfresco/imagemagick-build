@@ -39,4 +39,7 @@ jobs:
             -Durl=https://nexus.alfresco.com/nexus/content/repositories/thirdparty/ \
             -DrepositoryId=thirdparty \
             -Dversion=7.1.0-16-test \
-            -Dfile=rpms/ImageMagick-7.1.0-16.x86_64.rpm
+            -Dfile=rpms/ImageMagick-7.1.0-16.x86_64.rpm \
+            -Dclassifier=rocky8
+            -Dfiles=rpms/ImageMagick-libs-7.1.0-16.x86_64.rpm \
+            -Dclassifiers=rocky8-libs
