@@ -27,7 +27,7 @@ jobs:
           files: rpms/*.rpm
       - name: Deploy to nexus
         uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@v1.11.0
-        if: startsWith(github.ref_name, 'OPSEXP-1693')
+        if: startsWith(github.ref_name, 'refs/tags/')
         with:
           group-id: org.imagemagick
           artifact-id: imagemagick-distribution
