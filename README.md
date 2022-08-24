@@ -4,7 +4,7 @@ This repo is building ImageMagick v7.1 RPM packages for Rocky Linux 8 that are
 not available elsewhere and that are required by
 [Alfresco](https://docs.alfresco.com/content-services/latest/support/) to work properly.
 
-Packages are published under [Releases](https://github.com/Alfresco/imagemagick-build/releases) section.
+Packages are published under [Releases](https://github.com/Alfresco/imagemagick-build/releases) section and on our [Nexus](https://nexus.alfresco.com/nexus/service/local/repositories/thirdparty/content/org/imagemagick/imagemagick-distribution/) instance.
 
 ## Release a new version
 
