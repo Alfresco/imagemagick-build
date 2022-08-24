@@ -32,7 +32,7 @@ jobs:
           group-id: org.imagemagick
           artifact-id: imagemagick-distribution
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
-          version: ${{ steps.build.outputs.built-version }}-test
+          version: ${{ steps.build.outputs.built-version }}-gha
           file: rpms/ImageMagick-${{ steps.build.outputs.built-version }}.x86_64.rpm
           classifier: rocky8
           files: rpms/ImageMagick-libs-${{ steps.build.outputs.built-version }}.x86_64.rpm
