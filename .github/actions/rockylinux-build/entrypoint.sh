@@ -7,8 +7,10 @@ fi
 
 DEST_DIR=$GITHUB_WORKSPACE/rpms
 
-echo "Copying prebuilt RPMs to $DEST_DIR"
+echo "Copying prebuilt RPMs for $IMAGEMAGICK_VERSION to $DEST_DIR"
 mkdir -p "$DEST_DIR"
 cp /root/rpmbuild/RPMS/x86_64/*.rpm "$DEST_DIR"
+
+echo "::set-output name=built-version::$IMAGEMAGICK_VERSION"
 
 exit 0
