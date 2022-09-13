@@ -7,12 +7,8 @@ Standards-Version: 4.4.1
 Homepage: https://imagemagick.org
 
 Architecture: all
-Depends: ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: ImageMagick 7 for Alfresco Transformation service
  This is the vanilla ImageMagick 7 software packaged for automated
  Alfresco deployments. All credit goes to ImageMagick Studio LLC, their
  contributors and community.
-Package: imagemagick-7.1.0-16-dev
-Description: ImageMagick 7 headers files
- This is the vanilla ImageMagick 7 software.
- All credit goes to ImageMagick Studio LLC, their contributors and community.

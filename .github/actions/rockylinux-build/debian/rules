@@ -47,3 +47,8 @@ override_dh_auto_configure:
                         --x-includes=/usr/include/X11 \
                         --x-libraries=/usr/lib/X11 \
                         --with-rsvg
+override_dh_shlibdeps:
+                dh_shlibdeps -- \
+                        -xghostscript \
+                        -xgslib \
+                        -xgsfonts

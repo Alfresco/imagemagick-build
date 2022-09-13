@@ -1,4 +1,4 @@
-FROM rockylinux:8
+FROM rockylinux:8 As rockylinux8
 
 ENV IMAGEMAGICK_VERSION=7.1.0-16
 
