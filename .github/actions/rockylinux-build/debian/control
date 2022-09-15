@@ -1,14 +1,36 @@
 Source: imagemagick-7.1.0-16
 Section: graphics
 Priority: optional
-Maintainer: Saurabh Lohe
-Build-Depends: autotools-dev
+Maintainer: Saurabh Lohe <saurabh.lohe@globallogic.com>
+Build-Depends: autotools-dev, libjbig-dev:amd64,
+ libsm6:amd64, libfftw3-dev:amd64, liblcms2-dev:amd64, gawk, zlib1g-dev:amd64,
+ libglib2.0-dev:amd64, libzip-dev:amd64, libfribidi-dev:amd64, mime-support,
+ libxdmcp-dev:amd64, liblzma-dev:amd64, libjpeg-turbo8:amd64, libpng-dev:amd64,
+ libsigsegv2:amd64, libfontconfig1-dev:amd64,
+ libpixman-1-dev:amd64, libxext-dev:amd64,
+ libxrender-dev:amd64, libthai-dev:amd64, locales, libraqm-dev:amd64,
+ libbz2-dev:amd64, libdatrie-dev:amd64, libmagic-mgc, libffi-dev:amd64,
+ libxcb1:amd64, libwebp6:amd64, libxcb1-dev:amd64, libxdmcp6:amd64,
+ libtiff-dev:amd64, x11proto-dev, uuid-dev:amd64, libglib2.0-0:amd64,
+ libxext6:amd64, libtiff5:amd64, libmagic1:amd64,
+ pkg-config, libice6:amd64, libwebp-dev:amd64, libopenjp2-7-dev,
+ file, libx11-dev:amd64, libgraphite2-dev:amd64, libxau-dev:amd64,
+ libjbig0:amd64, libcairo2-dev:amd64,
+ libexpat1-dev:amd64, liblqr-1-0-dev:amd64, libraw-dev:amd64, libbsd0:amd64,
+ libopenexr-dev, libx11-6:amd64, libpango1.0-dev:amd64, libxau6:amd64
 Standards-Version: 4.4.1
 Homepage: https://imagemagick.org
 
-Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Package: imagemagick-7.1.0-16
+Architecture: amd64
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: ImageMagick 7 for Alfresco Transformation service
  This is the vanilla ImageMagick 7 software packaged for automated
  Alfresco deployments. All credit goes to ImageMagick Studio LLC, their
  contributors and community.
+
+Package: imagemagick-7.1.0-16-dev
+Architecture: any
+Description: ImageMagick 7 headers files
+ This is the vanilla ImageMagick 7 software.
+ All credit goes to ImageMagick Studio LLC, their contributors and community.
