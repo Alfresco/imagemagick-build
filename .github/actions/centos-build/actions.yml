@@ -1,4 +1,4 @@
-name: "RockyLinux build"
+name: "Centos build"
 description: "Build Imagemagick RPMs from sources for centos"
 outputs:
   built-version:
