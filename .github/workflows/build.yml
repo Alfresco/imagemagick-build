@@ -7,8 +7,8 @@ permissions:
   contents: write
 
 jobs:
-  build:
-    name: Build
+  build_rockylinux:
+    name: Build-Rocky8
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -37,6 +37,40 @@ jobs:
           classifier: rocky8
           files: rpms/ImageMagick-libs-${{ steps.build.outputs.built-version }}.x86_64.rpm
           classifiers: rocky8-libs
+          types: rpm
+          maven-username: ${{ secrets.NEXUS_USERNAME }}
+          maven-password: ${{ secrets.NEXUS_PASSWORD }}
+
+  build_centoslinux:
+    name: Build-Centos7
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build
+        id: build
+        uses: ./.github/actions/centos-build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: centos-rpms
+          path: rpms/*.rpm
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: rpms/*.rpm
+      - name: Deploy to nexus
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@v1.11.0
+        if: startsWith(github.ref_name, 'refs/tags/')
+        with:
+          group-id: org.imagemagick
+          artifact-id: imagemagick-distribution
+          repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
+          version: ${{ steps.build.outputs.built-version }}-ci
+          file: rpms/ImageMagick-${{ steps.build.outputs.built-version }}.x86_64.rpm
+          classifier: centos7
+          files: rpms/ImageMagick-libs-${{ steps.build.outputs.built-version }}.x86_64.rpm
+          classifiers: centos7-libs
           types: rpm
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
