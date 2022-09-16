@@ -26,4 +26,6 @@ RUN cd ImageMagick && \
 
 RUN ls /root/rpmbuild/RPMS/x86_64
 
-COPY ../rockylinux-build/entrypoint.sh  /entrypoint.sh
+COPY entrypoint.sh  /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
