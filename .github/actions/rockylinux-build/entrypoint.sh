@@ -5,7 +5,7 @@ if [ -z "$GITHUB_WORKSPACE" ]; then
     exit 1
 fi
 
-DEST_DIR=$GITHUB_WORKSPACE/packages
+DEST_DIR=$GITHUB_WORKSPACE/rpms
 
 echo "Copying prebuilt packages for $IMAGEMAGICK_VERSION to $DEST_DIR"
 mkdir -p "$DEST_DIR"
