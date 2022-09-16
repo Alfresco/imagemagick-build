@@ -1,0 +1,8 @@
+name: "RockyLinux build"
+description: "Build Imagemagick RPMs from sources for centos"
+outputs:
+  built-version:
+    description: 'The package version we built'
+runs:
+  using: "docker"
+  image: "Dockerfile"

@@ -1,13 +1,13 @@
-FROM rockylinux:8 As rockylinux8
+FROM centos:7 AS centos7
 
 ENV IMAGEMAGICK_VERSION=7.1.0-16
 
 # Build dependencies
-RUN dnf install -y epel-release git make wget 'dnf-command(config-manager)' && \
-    dnf config-manager --set-enabled powertools && \
-    dnf install -y rpm-build yum-utils && \
-    dnf group install -y "Development Tools" && \
-    dnf clean all
+RUN yum install -y epel-release git make && \
+    yum-config-manager --enable powertools && \
+    yum install -y rpm-build yum-utils && \
+    yum group install -y "Development Tools" && \
+    yum clean all
 
 # Imagemagick sources
 RUN git clone --depth 1 -b $IMAGEMAGICK_VERSION https://github.com/ImageMagick/ImageMagick.git
@@ -26,6 +26,4 @@ RUN cd ImageMagick && \
 
 RUN ls /root/rpmbuild/RPMS/x86_64
 
-COPY entrypoint.sh /entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
+COPY ../rockylinux-build/entrypoint.sh  /entrypoint.sh
