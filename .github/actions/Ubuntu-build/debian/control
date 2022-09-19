@@ -2,7 +2,7 @@ Source: imagemagick-7.1.0-16
 Section: graphics
 Priority: optional
 Maintainer: Saurabh Lohe <saurabh.lohe@globallogic.com>
-Build-Depends: autotools-dev, ghostscript, gslib, gsfonts, libjbig-dev:amd64,
+Build-Depends: autotools-dev, ghostscript, gsfonts, libjbig-dev:amd64,
  libsm6:amd64, libfftw3-dev:amd64, liblcms2-dev:amd64, gawk, zlib1g-dev:amd64,
  libglib2.0-dev:amd64, libzip-dev:amd64, libfribidi-dev:amd64, mime-support,
  libxdmcp-dev:amd64, liblzma-dev:amd64, libjpeg-turbo8:amd64, libpng-dev:amd64,
