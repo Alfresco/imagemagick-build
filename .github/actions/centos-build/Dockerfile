@@ -1,4 +1,4 @@
-FROM centos:7 AS centos7
+FROM centos:7
 
 ENV IMAGEMAGICK_VERSION=7.1.0-16
 

@@ -20,11 +20,6 @@ jobs:
         with:
           name: rockylinux-rpms
           path: rpms/*.rpm
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: rpms/*.rpm
       - name: Deploy to nexus
         uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@v1.11.0
         if: startsWith(github.ref_name, 'refs/tags/')
@@ -54,11 +49,6 @@ jobs:
         with:
           name: centos-rpms
           path: rpms/*.rpm
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: rpms/*.rpm
       - name: Deploy to nexus
         uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@v1.11.0
         if: startsWith(github.ref_name, 'refs/tags/')
@@ -87,12 +77,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu-deb
-          path: rpms/*.deb
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: rpms/*.deb
+          path: packages/*.deb
       - name: Deploy to nexus
         uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@v1.11.0
         if: startsWith(github.ref_name, 'refs/tags/')
@@ -108,4 +93,3 @@ jobs:
           types: deb
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
-
