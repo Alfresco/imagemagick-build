@@ -65,7 +65,7 @@ jobs:
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
 
-  build_Ubuntu:
+  build_ubuntu:
     name: Ubuntu-18.04
     runs-on: ubuntu-latest
     steps:
