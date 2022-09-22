@@ -86,9 +86,9 @@ jobs:
           artifact-id: imagemagick-distribution
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
           version: ${{ steps.build.outputs.built-version }}-ci
-          file: rpms/imagemagick-7.1.0-16_${{ steps.build.outputs.built-version }}_amd64.deb
+          file: packages/imagemagick_${{ steps.build.outputs.built-version }}_amd64.deb
           classifier: ubuntu
-          files: rpms/imagemagick-7.1.0-16-dev_${{ steps.build.outputs.built-version }}_amd64.deb
+          files: packages/imagemagick-dev_${{ steps.build.outputs.built-version }}_amd64.deb
           classifiers: ubuntu-dev
           types: deb
           maven-username: ${{ secrets.NEXUS_USERNAME }}
