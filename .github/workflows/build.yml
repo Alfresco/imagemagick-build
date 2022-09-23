@@ -76,7 +76,7 @@ jobs:
         uses: ./.github/actions/Ubuntu-build
       - uses: actions/upload-artifact@v3
         with:
-          name: ubuntu-deb
+          name: ubuntu-18.04-deb
           path: packages/*.deb
       - name: Deploy to nexus
         uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@v1.11.0
@@ -105,7 +105,7 @@ jobs:
         uses: ./.github/actions/Ubuntu20.04-build
       - uses: actions/upload-artifact@v3
         with:
-          name: ubuntu-deb
+          name: ubuntu-20.04-deb
           path: packages/*.deb
       - name: Deploy to nexus
         uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@v1.11.0
