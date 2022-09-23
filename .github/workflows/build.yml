@@ -29,9 +29,9 @@ jobs:
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
           version: ${{ steps.build.outputs.built-version }}-ci
           file: rpms/ImageMagick-${{ steps.build.outputs.built-version }}.x86_64.rpm
-          classifier: rocky8
+          classifier: el8
           files: rpms/ImageMagick-libs-${{ steps.build.outputs.built-version }}.x86_64.rpm
-          classifiers: rocky8-libs
+          classifiers: el8-libs
           types: rpm
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
@@ -58,9 +58,9 @@ jobs:
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
           version: ${{ steps.build.outputs.built-version }}-ci
           file: rpms/ImageMagick-${{ steps.build.outputs.built-version }}.x86_64.rpm
-          classifier: centos7
+          classifier: el7
           files: rpms/ImageMagick-libs-${{ steps.build.outputs.built-version }}.x86_64.rpm
-          classifiers: centos7-libs
+          classifiers: el7-libs
           types: rpm
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
@@ -90,6 +90,35 @@ jobs:
           classifier: ubuntu
           files: packages/imagemagick-dev_${{ steps.build.outputs.built-version }}_amd64.deb
           classifiers: ubuntu-dev
+          types: deb
+          maven-username: ${{ secrets.NEXUS_USERNAME }}
+          maven-password: ${{ secrets.NEXUS_PASSWORD }}
+
+  build_ubuntu20:
+    name: Ubuntu-20.04
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build
+        id: build
+        uses: ./.github/actions/Ubuntu20.04-build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ubuntu-deb
+          path: packages/*.deb
+      - name: Deploy to nexus
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@v1.11.0
+        if: startsWith(github.ref_name, 'refs/tags/')
+        with:
+          group-id: org.imagemagick
+          artifact-id: imagemagick-distribution
+          repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
+          version: ${{ steps.build.outputs.built-version }}-ci
+          file: packages/imagemagick_${{ steps.build.outputs.built-version }}_amd64.deb
+          classifier: ubuntu-20.04
+          files: packages/imagemagick-dev_${{ steps.build.outputs.built-version }}_amd64.deb
+          classifiers: ubuntu-20.04-dev
           types: deb
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}

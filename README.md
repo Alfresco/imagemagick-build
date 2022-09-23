@@ -1,6 +1,6 @@
 # imagemagick-build
 
-This repo is building ImageMagick v7.1 RPM packages for Rocky Linux 8 that are
+This repo is building ImageMagick v7.1 RPM packages for Rocky Linux 8, Centos7, Ubuntu-18.04 & Ubuntu-20.04 that are
 not available elsewhere and that are required by
 [Alfresco](https://docs.alfresco.com/content-services/latest/support/) to work properly.
 
