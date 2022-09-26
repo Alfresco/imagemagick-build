@@ -1,1 +1,0 @@
-Note:- This is generic package which can be used for both Centos7 and Redhat7.

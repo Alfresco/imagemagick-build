@@ -65,7 +65,7 @@ jobs:
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
 
-  build_ubuntu:
+  build_ubuntu18:
     name: Ubuntu-18.04
     runs-on: ubuntu-latest
     steps:
@@ -73,7 +73,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Build
         id: build
-        uses: ./.github/actions/Ubuntu-build
+        uses: ./.github/actions/ubuntu18.04-build
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu-18.04-deb
@@ -87,9 +87,9 @@ jobs:
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
           version: ${{ steps.build.outputs.built-version }}-ci
           file: packages/imagemagick_${{ steps.build.outputs.built-version }}_amd64.deb
-          classifier: ubuntu
+          classifier: ubuntu-18.04
           files: packages/imagemagick-dev_${{ steps.build.outputs.built-version }}_amd64.deb
-          classifiers: ubuntu-dev
+          classifiers: ubuntu-18.04-dev
           types: deb
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}

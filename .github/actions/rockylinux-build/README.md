@@ -1,1 +1,0 @@
-Note: This is generic package which can be used for both Redhat8 and Rockylinux8.

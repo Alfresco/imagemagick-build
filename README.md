@@ -4,6 +4,8 @@ This repo is building ImageMagick v7.1 packages for Rocky Linux 8, Centos7, Ubun
 not available elsewhere and that are required by
 [Alfresco](https://docs.alfresco.com/content-services/latest/support/) to work properly.
 
+Note:- ImageMagick v7.1 for Centos7 & Rockylinux 8 are the generic packages which can be used for Redhat7 & Redhat8 respectively.
+
 Packages are published under [Releases](https://github.com/Alfresco/imagemagick-build/releases) section and on our [Nexus](https://nexus.alfresco.com/nexus/service/local/repositories/thirdparty/content/org/imagemagick/imagemagick-distribution/) instance.
 
 ## Release a new version
