@@ -115,6 +115,7 @@ jobs:
           artifact-id: imagemagick-distribution
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
           version: ${{ steps.build.outputs.built-version }}-ci
+          generate-pom: false
           file: packages/imagemagick_${{ steps.build.outputs.built-version }}_amd64.deb
           classifier: ubuntu-20.04
           files: packages/imagemagick-dev_${{ steps.build.outputs.built-version }}_amd64.deb
