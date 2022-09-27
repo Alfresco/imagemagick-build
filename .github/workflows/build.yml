@@ -18,7 +18,7 @@ jobs:
           name: rockylinux-rpms
           path: rpms/*.rpm
       - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@OPSEXP-1735-no-pom-maven-upload
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@a23992e
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           group-id: org.imagemagick
@@ -48,7 +48,7 @@ jobs:
           name: centos-rpms
           path: rpms/*.rpm
       - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@OPSEXP-1735-no-pom-maven-upload
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@a23992e
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           group-id: org.imagemagick
@@ -78,7 +78,7 @@ jobs:
           name: ubuntu-18.04-deb
           path: packages/*.deb
       - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@OPSEXP-1735-no-pom-maven-upload
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@a23992e
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           group-id: org.imagemagick
