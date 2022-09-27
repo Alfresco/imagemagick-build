@@ -1,0 +1,8 @@
+name: "Ubuntu build"
+description: "Build Imagemagick RPMs from sources for Ubuntu"
+outputs:
+  built-version:
+    description: 'The package version we built'
+runs:
+  using: "docker"
+  image: "Dockerfile"

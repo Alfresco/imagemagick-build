@@ -1,0 +1,6 @@
+imagemagick-7.1.0-16 for Debian
+---------------------------
+
+Note:This package is built from Image Magick sources for use With Alfresco Transformation Service. All credits for ImageMagick goes to ImageMagick Studio LLC. This package do NOT pull ghostscript related packages as a dependency. Should you want to use ghostscript with your Alfresco installation please install it manually and make sure you understand license implications.
+
+ -- root <>  Thur, 15 Sep 2022 12:54:42 +0000
