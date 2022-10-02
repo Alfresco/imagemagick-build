@@ -7,4 +7,4 @@ runs:
   using: "docker"
   image: "Dockerfile"
   env:
-    - IMAGEMAGICK_VERSION=7.1.0-16
+    - IMAGEMAGICK_VERSION=imagemagick-build/.github/actions/env
