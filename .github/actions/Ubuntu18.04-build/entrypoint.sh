@@ -18,7 +18,7 @@ DEST_DIR=$GITHUB_WORKSPACE/packages
 
 echo "Copying prebuilt packages for $1 to $DEST_DIR"
 mkdir -p "$DEST_DIR"
-cp /root/*.deb "$DEST_DIR" 
+cp /github/home/root/*.deb "$DEST_DIR" 
 
 echo "::set-output name=built-version::$1"
 
