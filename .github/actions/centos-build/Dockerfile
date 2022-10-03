@@ -1,6 +1,5 @@
 FROM centos:7
 
-
 # Build dependencies
 RUN yum install -y epel-release git make && \
     yum-config-manager --enable powertools && \
