@@ -21,7 +21,7 @@ cd /github/workspace/ImageMagick && \
     yum-builddep -y ImageMagick-$1.src.rpm && \
     rpmbuild --rebuild --nocheck ImageMagick-$1.src.rpm
 
-ls /root/rpmbuild/RPMS/x86_64
+ls  /github/home/rpmbuild/RPMS/x86_64
 
 if [ -z "$GITHUB_WORKSPACE" ]; then
     echo "GITHUB_WORKSPACE is not set"
@@ -32,7 +32,7 @@ DEST_DIR=$GITHUB_WORKSPACE/rpms
 
 echo "Copying prebuilt packages for $1 to $DEST_DIR"
 mkdir -p "$DEST_DIR"
-cp /root/rpmbuild/RPMS/x86_64/*.rpm  "$DEST_DIR"
+cp /github/home/rpmbuild/RPMS/x86_64/*.rpm  "$DEST_DIR"
 
 echo "::set-output name=built-version::$1"
 
