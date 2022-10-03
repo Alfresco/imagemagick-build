@@ -1,6 +1,6 @@
 FROM centos:7
 
-ENV IMAGEMAGICK_VERSION=""
+ENV IMAGEMAGICK_VERSION=${IMAGEMAGICK_VERSION}
 
 # Build dependencies
 RUN yum install -y epel-release git make && \
