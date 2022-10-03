@@ -17,7 +17,7 @@ cd ImageMagick && \
     make srpm
 
 ## Finally build rpm
-cd ImageMagick && \
+cd /github/workspace/ImageMagick && \
     yum-builddep -y ImageMagick-$1.src.rpm && \
     rpmbuild --rebuild --nocheck ImageMagick-$1.src.rpm
 
