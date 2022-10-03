@@ -1,5 +1,5 @@
 #!/bin/bash -e
-
+echo "! $1"
 if [ -z "$GITHUB_WORKSPACE" ]; then
     echo "GITHUB_WORKSPACE is not set"
     exit 1
