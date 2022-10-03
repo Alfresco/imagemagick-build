@@ -10,7 +10,7 @@ RUN yum install -y epel-release git make && \
     yum clean all
 
 # Imagemagick sources
-RUN git clone --depth 1 -b $IMAGEMAGICK_VERSION https://github.com/ImageMagick/ImageMagick.git
+RUN git clone --depth 1 -b IMAGEMAGICK_VERSION=$IMAGEMAGICK_VERSION https://github.com/ImageMagick/ImageMagick.git
 
 # Generate updated .src.rpm
 RUN cd ImageMagick && \
