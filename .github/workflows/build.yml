@@ -18,7 +18,7 @@ jobs:
         uses: ./.github/actions/centos-build
         with:
           args: 
-            - "${{ steps.imagemagick.outputs.version }}"
+             "${{ steps.imagemagick.outputs.version }}"
       - uses: actions/upload-artifact@v3
         with:
           name: centos-rpms
