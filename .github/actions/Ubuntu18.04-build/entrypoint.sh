@@ -14,12 +14,6 @@ cd ImageMagick && \
     apt-get install -y dpkg-dev devscripts gawk ghostscript gsfonts libzstd-dev libbz2-dev libdjvulibre-dev libfftw3-dev fontconfig libfreetype6-dev libgs-dev libjbig-dev libjpeg8-dev libjpeg-turbo8-dev liblcms2-dev liblqr-1-0-dev libltdl-dev liblzma-dev libopenexr-dev libopenjp2-7-dev libpango1.0-dev libperl-dev libpng-dev libraqm-dev libraw-dev librsvg2-dev libtiff5-dev libwebp-dev libwmf-dev libx11-dev libxext-dev libxml2-dev libxt-dev libzip-dev zlib1g-dev && \
     yes | mk-build-deps -Bi && dpkg-buildpackage -b -uc
 
-DEST_DIR=$GITHUB_WORKSPACE/packages
-
-echo "Copying prebuilt packages for $1 to $DEST_DIR"
-mkdir -p "$DEST_DIR"
-cp $GITHUB_WORKSPACE/*.deb "$DEST_DIR"
-
 echo "::set-output name=built-version::$1"
 
 exit 0

@@ -94,7 +94,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu-18.04-deb
-          path: packages/*.deb
+          path: *.deb
       - name: Deploy to nexus
         uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@a23992ea03f16181e23cf7e934b7c0d2f9f4a291
         if: startsWith(github.ref, 'refs/tags/v')
@@ -104,9 +104,9 @@ jobs:
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
           version: ${{ steps.build.outputs.built-version }}-ci
           generate-pom: false
-          file: packages/imagemagick_${{ steps.build.outputs.built-version }}_amd64.deb
+          file: imagemagick_${{ steps.build.outputs.built-version }}_amd64.deb
           classifier: ubuntu-18.04
-          files: packages/imagemagick-dev_${{ steps.build.outputs.built-version }}_amd64.deb
+          files: imagemagick-dev_${{ steps.build.outputs.built-version }}_amd64.deb
           classifiers: ubuntu-18.04-dev
           types: deb
           maven-username: ${{ secrets.NEXUS_USERNAME }}
@@ -130,7 +130,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu-20.04-deb
-          path: packages/*.deb
+          path: *.deb
       - name: Deploy to nexus
         uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@a23992ea03f16181e23cf7e934b7c0d2f9f4a291
         if: startsWith(github.ref, 'refs/tags/v')
@@ -140,9 +140,9 @@ jobs:
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
           version: ${{ steps.build.outputs.built-version }}-ci
           generate-pom: false
-          file: packages/imagemagick_${{ steps.build.outputs.built-version }}_amd64.deb
+          file: imagemagick_${{ steps.build.outputs.built-version }}_amd64.deb
           classifier: ubuntu-20.04
-          files: packages/imagemagick-dev_${{ steps.build.outputs.built-version }}_amd64.deb
+          files: imagemagick-dev_${{ steps.build.outputs.built-version }}_amd64.deb
           classifiers: ubuntu-20.04-dev
           types: deb
           maven-username: ${{ secrets.NEXUS_USERNAME }}
