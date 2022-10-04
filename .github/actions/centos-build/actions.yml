@@ -3,6 +3,10 @@ description: "Build Imagemagick RPMs from sources for centos"
 outputs:
   built-version:
     description: 'The package version we built'
+inputs:
+  im-version:
+    description: 'The imagemagick package version to build'
+    required: true
 runs:
   using: "docker"
   image: "Dockerfile"
