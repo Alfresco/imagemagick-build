@@ -1,5 +1,10 @@
 #!/bin/bash -e
 
+if [ -z "$GITHUB_WORKSPACE" ]; then
+    echo "GITHUB_WORKSPACE is not set"
+    exit 1
+fi
+
 apt-get update && apt-get upgrade -y &&  apt-get install build-essential git automake equivs -y
 
 git clone --depth 1 -b $1 https://github.com/ImageMagick/ImageMagick.git
@@ -10,16 +15,11 @@ cd ImageMagick && \
     yes | mk-build-deps -Bi && dpkg-buildpackage -b -uc
 
 
-if [ -z "$GITHUB_WORKSPACE" ]; then
-    echo "GITHUB_WORKSPACE is not set"
-    exit 1
-fi
-
 DEST_DIR=$GITHUB_WORKSPACE/packages
 
 echo "Copying prebuilt packages for $1 to $DEST_DIR"
 mkdir -p "$DEST_DIR"
-cp /github/workspace/*.deb "$DEST_DIR"
+cp $GITHUB_WORKSPACE/*.deb "$DEST_DIR"
 
 echo "::set-output name=built-version::$1"
 

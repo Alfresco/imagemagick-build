@@ -1,4 +1,10 @@
 #!/bin/bash -e
+
+if [ -z "$GITHUB_WORKSPACE" ]; then
+    echo "GITHUB_WORKSPACE is not set"
+    exit 1
+fi
+
 ##Build dependencies
 yum install -y epel-release git make && \
     yum-config-manager --enable powertools && \
@@ -17,16 +23,11 @@ cd ImageMagick && \
     make srpm
 
 ## Finally build rpm
-cd /github/workspace/ImageMagick && \
+cd  $GITHUB_WORKSPACE/ImageMagick && \
     yum-builddep -y ImageMagick-$1.src.rpm && \
     rpmbuild --rebuild --nocheck ImageMagick-$1.src.rpm
 
 ls  /github/home/rpmbuild/RPMS/x86_64
-
-if [ -z "$GITHUB_WORKSPACE" ]; then
-    echo "GITHUB_WORKSPACE is not set"
-    exit 1
-fi
 
 DEST_DIR=$GITHUB_WORKSPACE/rpms
 

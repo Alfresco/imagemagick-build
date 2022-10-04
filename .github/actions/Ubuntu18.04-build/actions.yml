@@ -5,10 +5,9 @@ outputs:
     description: 'The package version we built'
 inputs:
   im-version:
-    description: 'The package version we built for imagemagick'
+    description: 'The imagemagick package version to build'
     required: true
 runs:
   using: "docker"
   image: "Dockerfile"
-  env:
-     IMAGEMAGICK_VERSION: ${{ inputs.im-version }}
+
