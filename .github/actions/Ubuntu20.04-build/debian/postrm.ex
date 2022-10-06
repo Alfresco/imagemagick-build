@@ -1,5 +1,5 @@
 #!/bin/sh
-# postrm script for imagemagick-7.1.0-16
+# postrm script for imagemagick-7
 #
 # see: dh_installdeb(1)
 
