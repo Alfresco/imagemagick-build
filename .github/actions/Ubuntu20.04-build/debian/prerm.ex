@@ -1,5 +1,5 @@
 #!/bin/sh
-# prerm script for imagemagick-7.1.0-16
+# prerm script for imagemagick-7
 #
 # see: dh_installdeb(1)
 
