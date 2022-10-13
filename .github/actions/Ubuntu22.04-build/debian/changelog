@@ -1,0 +1,6 @@
+imagemagick (${version}) unstable; urgency=medium
+
+  * ImageMagick 7 repackaged for automated deployments of Alfresco
+    Transformation service
+
+ -- Saurabh Lohe <>  Thu, 8 Sep 2022 12:54:42 +0000
