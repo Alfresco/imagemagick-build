@@ -20,6 +20,7 @@ cd ImageMagick && \
     ./configure && \
     make dist-xz && \
     sed -i '/BuildRequires.*lqr/d' ImageMagick.spec && \
+    sed -i '162i %exclude gslib' ImageMagick.spec && \
     make srpm
 
 ## Finally build rpm
