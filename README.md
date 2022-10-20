@@ -13,6 +13,6 @@ Packages are published under [Releases](https://github.com/Alfresco/imagemagick-
 
 ## Release a new version
 
-* Bump ImageMagick env var version in [imagemagick-version](https://github.com/Alfresco/imagemagick-build/blob/main/.github/actions/imagemagick-version)
+* Bump ImageMagick version in [imagemagick-version](https://github.com/Alfresco/imagemagick-build/blob/main/.github/actions/imagemagick-version)
 * Tag the commit via `git tag -s v7.1.0-16 -m v7.1.0-16`
 * Push it `git push --tags origin v7.1.0-16`
