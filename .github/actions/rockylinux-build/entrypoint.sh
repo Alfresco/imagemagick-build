@@ -35,6 +35,6 @@ echo "Copying prebuilt packages for $1 to $DEST_DIR"
 mkdir -p "$DEST_DIR"
 cp /github/home/rpmbuild/RPMS/x86_64/*.rpm "$DEST_DIR"
 
-echo "::set-output name=built-version::$1"
+echo "built-version=$1" >> "$GITHUB_OUTPUT"
 
 exit 0
