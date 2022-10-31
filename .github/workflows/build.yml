@@ -20,7 +20,7 @@ jobs:
           args: 
              "${{ steps.imagemagick.outputs.version }}"
       - name: Test 
-        run:  rpm -qp --requires rpms/ImageMagick-libs-${{ steps.imagemagick.outputs.version }}.x86_64.rpm
+        run:  rpm -qp --requires rpms/ImageMagick-libs-${{ steps.imagemagick.outputs.version }}.x86_64.rpm |egrep 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'
       - uses: actions/upload-artifact@v3
         with:
           name: rockylinux-rpms
