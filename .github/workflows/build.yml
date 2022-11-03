@@ -19,7 +19,8 @@ jobs:
         with:
           args: 
              "${{ steps.imagemagick.outputs.version }}"
-      - name: Test 
+      - name: Test
+        continue-on-error: true
         run:  rpm -qp --requires rpms/ImageMagick-libs-${{ steps.imagemagick.outputs.version }}.x86_64.rpm |egrep -i 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'
       - uses: actions/upload-artifact@v3
         with:
@@ -57,7 +58,8 @@ jobs:
         with:
           args: 
              "${{ steps.imagemagick.outputs.version }}"
-      - name: Test 
+      - name: Test
+        continue-on-error: true
         run:  rpm -qp --requires rpms/ImageMagick-libs-${{ steps.imagemagick.outputs.version }}.x86_64.rpm |egrep -i 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'
       - uses: actions/upload-artifact@v3
         with:
