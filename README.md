@@ -14,6 +14,5 @@ Packages are published under [Releases](https://github.com/Alfresco/imagemagick-
 
 * Bump ImageMagick env var version in [imagemagick-version file](https://github.com/Alfresco/imagemagick-build/blob/main/.github/actions/imagemagick-version) via PR
 * Create a new tag `git tag -s vN.N.N -m vN.N.N` following semantic versioning
-* Push it `git push --tags origin v7.1.0-16`
 * Push it `git push --tags origin vN.N.N`
 * Draft a [new release](https://github.com/Alfresco/imagemagick-build/releases/new) using the previous tag as source and use the `Generate release notes` function to generate the changelog.
