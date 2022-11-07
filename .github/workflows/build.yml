@@ -96,7 +96,7 @@ jobs:
           args: 
              "${{ steps.imagemagick.outputs.version }}"
       - name: Test
-        run: dpkg-deb -I ${{ github.workspace }}/imagemagick_${{ steps.imagemagick.outputs.version }}_amd64.deb
+        run: "! dpkg-deb -I ${{ github.workspace }}/imagemagick_${{ steps.imagemagick.outputs.version }}_amd64.deb |grep -qL 'libcdt|libcgraph|libgvc"
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu-18.04-deb
@@ -134,7 +134,7 @@ jobs:
           args: 
              "${{ steps.imagemagick.outputs.version }}"
       - name: Test
-        run: dpkg-deb -I ${{ github.workspace }}/imagemagick_${{ steps.imagemagick.outputs.version }}_amd64.deb
+        run: "! dpkg-deb -I ${{ github.workspace }}/imagemagick_${{ steps.imagemagick.outputs.version }}_amd64.deb |grep -qL 'libcdt|libcgraph|libgvc"
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu-20.04-deb
@@ -172,7 +172,7 @@ jobs:
           args: 
              "${{ steps.imagemagick.outputs.version }}"
       - name: Test
-        run: dpkg-deb -I ${{ github.workspace }}/imagemagick_${{ steps.imagemagick.outputs.version }}_amd64.deb
+        run: "! dpkg-deb -I ${{ github.workspace }}/imagemagick_${{ steps.imagemagick.outputs.version }}_amd64.deb |grep -qL 'libcdt|libcgraph|libgvc"
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu-22.04-deb
