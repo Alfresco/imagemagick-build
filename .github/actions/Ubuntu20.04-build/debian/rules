@@ -49,6 +49,4 @@ override_dh_auto_configure:
 			--with-rsvg
 override_dh_shlibdeps:
 		dh_shlibdeps -- \
-			-xghostscript \
-			-xgslib \
-			-xgsfonts
+			-xlibgs9
