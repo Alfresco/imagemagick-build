@@ -52,4 +52,3 @@ override_dh_shlibdeps:
 			-xghostscript \
 			-xgslib \
 			-xgsfonts \
-			-xlibgs
