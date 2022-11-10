@@ -19,6 +19,8 @@ jobs:
         with:
           args: 
              "${{ steps.imagemagick.outputs.version }}"
+      - name: Test
+        run: "rpm -qp --requires rpms/ImageMagick-libs-${{ steps.imagemagick.outputs.version }}.x86_64.rpm | grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'"
       - uses: actions/upload-artifact@v3
         with:
           name: rockylinux-rpms
@@ -55,6 +57,8 @@ jobs:
         with:
           args: 
              "${{ steps.imagemagick.outputs.version }}"
+      - name: Test
+        run:  "rpm -qp --requires rpms/ImageMagick-libs-${{ steps.imagemagick.outputs.version }}.x86_64.rpm | grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'"
       - uses: actions/upload-artifact@v3
         with:
           name: centos-rpms
@@ -91,6 +95,8 @@ jobs:
         with:
           args: 
              "${{ steps.imagemagick.outputs.version }}"
+      - name: Test
+        run: "dpkg-deb -f ${{ github.workspace }}/imagemagick_${{ steps.imagemagick.outputs.version }}_amd64.deb Depends | grep -qEv 'libcdt|libcgraph|libgvc|libgs9'"
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu-18.04-deb
@@ -127,6 +133,8 @@ jobs:
         with:
           args: 
              "${{ steps.imagemagick.outputs.version }}"
+      - name: Test
+        run: "dpkg-deb -f ${{ github.workspace }}/imagemagick_${{ steps.imagemagick.outputs.version }}_amd64.deb Depends | grep -qEv 'libcdt|libcgraph|libgvc|libgs9'"
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu-20.04-deb
@@ -163,6 +171,8 @@ jobs:
         with:
           args: 
              "${{ steps.imagemagick.outputs.version }}"
+      - name: Test
+        run: "dpkg-deb -f ${{ github.workspace }}/imagemagick_${{ steps.imagemagick.outputs.version }}_amd64.deb Depends | grep -qEv 'libcdt|libcgraph|libgvc|libgs9'"
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu-22.04-deb

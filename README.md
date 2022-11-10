@@ -1,10 +1,12 @@
 # imagemagick-build
 
-This repo is building ImageMagick v7 packages for Rocky Linux 8, Centos7, Ubuntu-18.04 & Ubuntu20.04 that are
+This repo is building ImageMagick v7 packages for [RockyLinux8](https://github.com/Alfresco/imagemagick-build/tree/main/.github/actions/rockylinux-build), [Centos7](https://github.com/Alfresco/imagemagick-build/tree/main/.github/actions/centos-build), [Ubuntu-18.04](https://github.com/Alfresco/imagemagick-build/tree/main/.github/actions/Ubuntu18.04-build), [Ubuntu20.04](https://github.com/Alfresco/imagemagick-build/tree/main/.github/actions/Ubuntu20.04-build) & [Ubuntu22.04](https://github.com/Alfresco/imagemagick-build/tree/main/.github/actions/Ubuntu22.04-build) that are
 not available elsewhere and that are required by
 [Alfresco](https://docs.alfresco.com/content-services/latest/support/) to work properly.
 
-Note:- ImageMagick v7 for Centos7 & Rockylinux 8 are the generic packages which can be used for Redhat7 & Redhat8 respectively.
+Notes:- 
+
+* ImageMagick v7 for [Centos7](https://github.com/Alfresco/imagemagick-build/tree/main/.github/actions/centos-build) & [Rockylinux8](https://github.com/Alfresco/imagemagick-build/tree/main/.github/actions/rockylinux-build) are the generic packages which can be used for Redhat7 & Redhat8 respectively.
 
 Packages are published under [Releases](https://github.com/Alfresco/imagemagick-build/releases) section and on our [Nexus](https://nexus.alfresco.com/nexus/service/local/repositories/thirdparty/content/org/imagemagick/imagemagick-distribution/) instance.
 
