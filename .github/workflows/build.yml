@@ -178,7 +178,7 @@ jobs:
           name: ubuntu-22.04-deb
           path: ${{ github.workspace }}/*.deb
       - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@f1b0f61ef0f191c44cbc700c87767256bf137829
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@144385449bf9a8f976a2205739f2be3a1e752d81
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           group-id: org.imagemagick
