@@ -10,8 +10,6 @@ Notes:-
 
 * Packages are published under [Releases](https://github.com/Alfresco/imagemagick-build/releases) section and on our [Nexus](https://nexus.alfresco.com/nexus/service/local/repositories/thirdparty/content/org/imagemagick/imagemagick-distribution/) instance.
 
-* After the deployment of packages in [Nexus](https://nexus.alfresco.com/nexus/service/local/repositories/thirdparty/content/org/imagemagick/imagemagick-distribution/), "imagemagick_version" should be updated for the var files in repo [alfresco-ansible-deployment](https://github.com/Alfresco/alfresco-ansible-deployment/tree/master/roles/transformers/vars) as per the new value in Nexus.
-
 ## Release a new version
 
 * Bump ImageMagick env var version in [imagemagick-version file](https://github.com/Alfresco/imagemagick-build/blob/main/.github/actions/imagemagick-version) via PR
