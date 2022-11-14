@@ -32,7 +32,7 @@ jobs:
           group-id: org.imagemagick
           artifact-id: imagemagick-distribution
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
-          version: ${{ steps.build.outputs.built-version }}-ci
+          version: ${{ steps.build.outputs.built-version }}-ci-${{ github.run_number }}
           generate-pom: false
           file: rpms/ImageMagick-${{ steps.build.outputs.built-version }}.x86_64.rpm
           classifier: el8
@@ -70,7 +70,7 @@ jobs:
           group-id: org.imagemagick
           artifact-id: imagemagick-distribution
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
-          version: ${{ steps.build.outputs.built-version }}-ci
+          version: ${{ steps.build.outputs.built-version }}-ci-${{ github.run_number }}
           generate-pom: false
           file: rpms/ImageMagick-${{ steps.build.outputs.built-version }}.x86_64.rpm
           classifier: el7
@@ -108,7 +108,7 @@ jobs:
           group-id: org.imagemagick
           artifact-id: imagemagick-distribution
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
-          version: ${{ steps.build.outputs.built-version }}-ci
+          version: ${{ steps.build.outputs.built-version }}-ci-${{ github.run_number }}
           generate-pom: false
           file: ${{ github.workspace }}/imagemagick_${{ steps.build.outputs.built-version }}_amd64.deb
           classifier: ubuntu-18.04
@@ -146,7 +146,7 @@ jobs:
           group-id: org.imagemagick
           artifact-id: imagemagick-distribution
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
-          version: ${{ steps.build.outputs.built-version }}-ci
+          version: ${{ steps.build.outputs.built-version }}-ci-${{ github.run_number }}
           generate-pom: false
           file: ${{ github.workspace }}/imagemagick_${{ steps.build.outputs.built-version }}_amd64.deb
           classifier: ubuntu-20.04
@@ -184,7 +184,7 @@ jobs:
           group-id: org.imagemagick
           artifact-id: imagemagick-distribution
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
-          version: ${{ steps.build.outputs.built-version }}-ci
+          version: ${{ steps.build.outputs.built-version }}-ci-${{ github.run_number }}
           generate-pom: false
           file: ${{ github.workspace }}/imagemagick_${{ steps.build.outputs.built-version }}_amd64.deb
           classifier: ubuntu-22.04
