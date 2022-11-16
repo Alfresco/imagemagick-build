@@ -8,7 +8,7 @@ Notes:-
 
 * ImageMagick v7 for [Centos7](https://github.com/Alfresco/imagemagick-build/tree/main/.github/actions/centos-build) & [Rockylinux8](https://github.com/Alfresco/imagemagick-build/tree/main/.github/actions/rockylinux-build) are the generic packages which can be used for Redhat7 & Redhat8 respectively.
 
-Packages are published under [Releases](https://github.com/Alfresco/imagemagick-build/releases) section and on our [Nexus](https://nexus.alfresco.com/nexus/service/local/repositories/thirdparty/content/org/imagemagick/imagemagick-distribution/) instance.
+* Packages are published under [Releases](https://github.com/Alfresco/imagemagick-build/releases) section and on our [Nexus](https://nexus.alfresco.com/nexus/service/local/repositories/thirdparty/content/org/imagemagick/imagemagick-distribution/) instance.
 
 ## Release a new version
 
