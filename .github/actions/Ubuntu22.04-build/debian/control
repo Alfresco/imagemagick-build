@@ -1,4 +1,4 @@
-Source: imagemagick
+Source: imagemagick-alfresco
 Section: graphics
 Priority: optional
 Maintainer: Saurabh Lohe <saurabh.lohe@globallogic.com>
@@ -21,7 +21,7 @@ Build-Depends: autotools-dev, ghostscript, gsfonts, libjbig-dev:amd64,
 Standards-Version: 4.4.1
 Homepage: https://imagemagick.org
 
-Package: imagemagick
+Package: imagemagick-alfresco
 Architecture: amd64
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: ImageMagick 7 for Alfresco Transformation service
@@ -29,7 +29,7 @@ Description: ImageMagick 7 for Alfresco Transformation service
  Alfresco deployments. All credit goes to ImageMagick Studio LLC, their
  contributors and community.
 
-Package: imagemagick-dev
+Package: imagemagick-alfresco-dev
 Architecture: any
 Description: ImageMagick 7 headers files
  This is the vanilla ImageMagick 7 software.
