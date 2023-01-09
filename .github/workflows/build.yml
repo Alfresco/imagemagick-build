@@ -102,7 +102,7 @@ jobs:
           args: 
              "${{ steps.variables.outputs.imagemagick_version }}"
       - name: Test
-        run: "dpkg-deb -f ${{ github.workspace }}/imagemagick_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb Depends | grep -qEv 'libcdt|libcgraph|libgvc|libgs9'"
+        run: "dpkg-deb -f ${{ github.workspace }}/imagemagick-alfresco_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb Depends | grep -qEv 'libcdt|libcgraph|libgvc|libgs9'"
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu-18.04-deb
@@ -116,9 +116,9 @@ jobs:
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
           version: ${{ steps.build.outputs.built-version }}-ci-${{ steps.variables.outputs.imagemagick_release }}
           generate-pom: false
-          file: ${{ github.workspace }}/imagemagick_${{ steps.build.outputs.built-version }}_amd64.deb
+          file: ${{ github.workspace }}/imagemagick-alfresco_${{ steps.build.outputs.built-version }}_amd64.deb
           classifier: ubuntu-18.04
-          files: ${{ github.workspace }}/imagemagick-dev_${{ steps.build.outputs.built-version }}_amd64.deb
+          files: ${{ github.workspace }}/imagemagick-alfresco-dev_${{ steps.build.outputs.built-version }}_amd64.deb
           classifiers: ubuntu-18.04-dev
           types: deb
           maven-username: ${{ secrets.NEXUS_USERNAME }}
@@ -142,7 +142,7 @@ jobs:
           args: 
              "${{ steps.variables.outputs.imagemagick_version }}"
       - name: Test
-        run: "dpkg-deb -f ${{ github.workspace }}/imagemagick_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb Depends | grep -qEv 'libcdt|libcgraph|libgvc|libgs9'"
+        run: "dpkg-deb -f ${{ github.workspace }}/imagemagick-alfresco_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb Depends | grep -qEv 'libcdt|libcgraph|libgvc|libgs9'"
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu-20.04-deb
@@ -156,9 +156,9 @@ jobs:
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
           version: ${{ steps.build.outputs.built-version }}-ci-${{ steps.variables.outputs.imagemagick_release }}
           generate-pom: false
-          file: ${{ github.workspace }}/imagemagick_${{ steps.build.outputs.built-version }}_amd64.deb
+          file: ${{ github.workspace }}/imagemagick-alfresco_${{ steps.build.outputs.built-version }}_amd64.deb
           classifier: ubuntu-20.04
-          files: ${{ github.workspace }}/imagemagick-dev_${{ steps.build.outputs.built-version }}_amd64.deb
+          files: ${{ github.workspace }}/imagemagick-alfresco-dev_${{ steps.build.outputs.built-version }}_amd64.deb
           classifiers: ubuntu-20.04-dev
           types: deb
           maven-username: ${{ secrets.NEXUS_USERNAME }}
@@ -182,7 +182,7 @@ jobs:
           args: 
              "${{ steps.variables.outputs.imagemagick_version }}"
       - name: Test
-        run: "dpkg-deb -f ${{ github.workspace }}/imagemagick_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb Depends | grep -qEv 'libcdt|libcgraph|libgvc|libgs9'"
+        run: "dpkg-deb -f ${{ github.workspace }}/imagemagick-alfresco_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb Depends | grep -qEv 'libcdt|libcgraph|libgvc|libgs9'"
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu-22.04-deb
@@ -196,9 +196,9 @@ jobs:
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
           version: ${{ steps.build.outputs.built-version }}-ci-${{ steps.variables.outputs.imagemagick_release }}
           generate-pom: false
-          file: ${{ github.workspace }}/imagemagick_${{ steps.build.outputs.built-version }}_amd64.deb
+          file: ${{ github.workspace }}/imagemagick-alfresco_${{ steps.build.outputs.built-version }}_amd64.deb
           classifier: ubuntu-22.04
-          files: ${{ github.workspace }}/imagemagick-dev_${{ steps.build.outputs.built-version }}_amd64.deb
+          files: ${{ github.workspace }}/imagemagick-alfresco-dev_${{ steps.build.outputs.built-version }}_amd64.deb
           classifiers: ubuntu-22.04-dev
           types: deb
           maven-username: ${{ secrets.NEXUS_USERNAME }}
