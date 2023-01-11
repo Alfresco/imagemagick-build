@@ -24,7 +24,6 @@ Homepage: https://imagemagick.org
 Package: imagemagick-alfresco
 Architecture: amd64
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Provides: imagemagick
 Description: ImageMagick 7 for Alfresco Transformation service
  This is the vanilla ImageMagick 7 software packaged for automated
  Alfresco deployments. All credit goes to ImageMagick Studio LLC, their
