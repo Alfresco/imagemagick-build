@@ -1,4 +1,4 @@
-imagemagick (${version}) unstable; urgency=medium
+imagemagick-alfresco (${version}) unstable; urgency=medium
 
   * ImageMagick 7 repackaged for automated deployments of Alfresco
     Transformation service
