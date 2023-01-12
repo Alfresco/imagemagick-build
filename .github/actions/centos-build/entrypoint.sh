@@ -32,7 +32,7 @@ elif [ $1 == 7.1.0-16 ]; then
         ./configure && \
         make dist-xz && \
         make srpm
-else  echo "Imagemagick Version does not exit"
+else  echo "Imagemagick Version does not exist"
       exit2
 fi
 
