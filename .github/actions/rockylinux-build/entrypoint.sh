@@ -19,7 +19,7 @@ git clone --depth 1 -b $1 https://github.com/ImageMagick/ImageMagick.git
  cd ImageMagick && \
     sed -i '/BuildRequires.*lqr/d; /--with-lqr/d' ImageMagick.spec.in && \
     sed -i '/%package lib/a AutoReq: no' ImageMagick.spec.in && \
-    source override-$1.sh && \
+    source ./.github/actions/rockylinux-build/override-$1.sh && \
     ./configure && \
     make dist-xz && \
     make srpm
