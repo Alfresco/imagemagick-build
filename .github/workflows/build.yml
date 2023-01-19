@@ -15,7 +15,7 @@ jobs:
         run: |
           echo "imagemagick_version=$(cat ./.github/actions/imagemagick-version)" >> $GITHUB_OUTPUT
           echo "imagemagick_release=$(cat ./.github/actions/release-version)" >> $GITHUB_OUTPUT
-          echo "rpm_capabilities=$(cat ./.github/actions/rockylinux-build/rpm_cap-${{ env.imagemagick_version }}.txt)" >> $GITHUB_OUTPUT
+          echo "rpm_capabilities=$(cat ./.github/actions/rockylinux-build/7.1.0-16.txt)" >> $GITHUB_OUTPUT
       - name: Build
         id: build
         uses: ./.github/actions/rockylinux-build
@@ -56,7 +56,7 @@ jobs:
         run: |
           echo "imagemagick_version=$(cat ./.github/actions/imagemagick-version)" >> $GITHUB_OUTPUT
           echo "imagemagick_release=$(cat ./.github/actions/release-version)" >> $GITHUB_OUTPUT
-          echo "rpm_capabilities=$(cat ./.github/actions/rockylinux-build/${{ env.imagemagick_version }}.txt)" >> $GITHUB_OUTPUT
+          echo "rpm_capabilities=$(cat ./.github/actions/centos-build/7.1.0-16.txt)" >> $GITHUB_OUTPUT
       - name: Build
         id: build
         uses: ./.github/actions/centos-build
