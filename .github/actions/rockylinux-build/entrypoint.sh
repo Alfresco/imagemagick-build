@@ -16,7 +16,7 @@ dnf install -y epel-release git make wget 'dnf-command(config-manager)' && \
 git clone --depth 1 -b $1 https://github.com/ImageMagick/ImageMagick.git
 
 # Generate updated .src.rpm
- cd ImageMagick && \
+cd ImageMagick && \
     sed -i '/BuildRequires.*lqr/d; /--with-lqr/d' ImageMagick.spec.in && \
     sed -i '/%package lib/a AutoReq: no' ImageMagick.spec.in && \
     source /override-$1.sh && \
@@ -25,7 +25,7 @@ git clone --depth 1 -b $1 https://github.com/ImageMagick/ImageMagick.git
     make srpm
 
 # Finally build rpm
- cd $GITHUB_WORKSPACE/ImageMagick && \
+cd $GITHUB_WORKSPACE/ImageMagick && \
     yum-builddep -y ImageMagick-$1.src.rpm && \
     rpmbuild --rebuild --nocheck ImageMagick-$1.src.rpm
 
