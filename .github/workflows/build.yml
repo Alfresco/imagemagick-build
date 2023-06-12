@@ -65,7 +65,6 @@ jobs:
         with:
           args: 
              "${{ steps.variables.outputs.imagemagick_version }}"
-          platforms: linux/arm64
       - name: Test
         run: "rpm -qp --requires rpms/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.aarch64.rpm | grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'"
       - uses: actions/upload-artifact@v3
