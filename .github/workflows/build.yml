@@ -50,6 +50,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
       - name: Set build variables
         id: variables
         run: |
@@ -61,6 +65,7 @@ jobs:
         with:
           args: 
              "${{ steps.variables.outputs.imagemagick_version }}"
+          platforms: linux/arm64
       - name: Test
         run: "rpm -qp --requires rpms/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.aarch64.rpm | grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'"
       - uses: actions/upload-artifact@v3
