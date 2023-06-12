@@ -44,7 +44,8 @@ jobs:
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
 
-    name: Rocky 8 ARM64 
+  build_rockylinux_arm64:
+    name: Rocky 8 ARM64
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
