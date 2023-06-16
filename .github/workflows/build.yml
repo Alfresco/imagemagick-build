@@ -81,9 +81,9 @@ jobs:
           version: ${{ steps.build.outputs.built-version }}-ci-${{ steps.variables.outputs.imagemagick_release }}
           generate-pom: false
           file: rpms/ImageMagick-${{ steps.build.outputs.built-version }}.aarch64.rpm
-          classifier: arm64
+          classifier: el8-arm64
           files: rpms/ImageMagick-libs-${{ steps.build.outputs.built-version }}.aarch64.rpm
-          classifiers: arm64-libs
+          classifiers: el8-libs-arm64
           types: rpm
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
