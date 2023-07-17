@@ -28,7 +28,7 @@ jobs:
           name: rockylinux-rpms
           path: rpms/*.rpm
       - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7b0536b4e403e95365d83695c9ab3119b885ce36
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7cec5e9f2747676d07077dfeb5a089b96065f473
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           group-id: org.imagemagick
@@ -72,7 +72,7 @@ jobs:
           name: rockylinux-arm64-rpms
           path: rpms/*.rpm
       - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7b0536b4e403e95365d83695c9ab3119b885ce36
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7cec5e9f2747676d07077dfeb5a089b96065f473
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           group-id: org.imagemagick
@@ -112,7 +112,7 @@ jobs:
           name: centos-rpms
           path: rpms/*.rpm
       - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7b0536b4e403e95365d83695c9ab3119b885ce36
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7cec5e9f2747676d07077dfeb5a089b96065f473
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           group-id: org.imagemagick
@@ -152,7 +152,7 @@ jobs:
           name: ubuntu-18.04-deb
           path: ${{ github.workspace }}/*.deb
       - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7b0536b4e403e95365d83695c9ab3119b885ce36
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7cec5e9f2747676d07077dfeb5a089b96065f473
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           group-id: org.imagemagick
@@ -192,7 +192,7 @@ jobs:
           name: ubuntu-20.04-deb
           path: ${{ github.workspace }}/*.deb
       - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7b0536b4e403e95365d83695c9ab3119b885ce36
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7cec5e9f2747676d07077dfeb5a089b96065f473
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           group-id: org.imagemagick
@@ -232,7 +232,7 @@ jobs:
           name: ubuntu-22.04-deb
           path: ${{ github.workspace }}/*.deb
       - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7b0536b4e403e95365d83695c9ab3119b885ce36
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7cec5e9f2747676d07077dfeb5a089b96065f473
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           group-id: org.imagemagick
