@@ -43,7 +43,7 @@ jobs:
       - name: Test
         working-directory: RPMS/${{ matrix.target_arch }}
         run: >-
-          rpm -qp --requires ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.x86_64.rpm |
+          rpm -qp --requires ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm |
           grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'
 
       - uses: actions/upload-artifact@v3
