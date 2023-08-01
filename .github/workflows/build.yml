@@ -23,8 +23,8 @@ jobs:
       - name: Set build variables
         id: variables
         run: |
-          echo "imagemagick_version=$(cat ./.github/actions/imagemagick-version)" >> $GITHUB_OUTPUT
-          echo "imagemagick_release=$(cat ./.github/actions/release-version)" >> $GITHUB_OUTPUT
+          echo "imagemagick_version=$(cat ./imagemagick-version)" >> $GITHUB_OUTPUT
+          echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
       - name: Prepare image
         run: docker build . -t buildenv --build-arg BASE_IMAGE=${{ matrix.base_image }}
@@ -83,8 +83,8 @@ jobs:
       - name: Set build variables
         id: variables
         run: |
-          echo "imagemagick_version=$(cat ./.github/actions/imagemagick-version)" >> $GITHUB_OUTPUT
-          echo "imagemagick_release=$(cat ./.github/actions/release-version)" >> $GITHUB_OUTPUT
+          echo "imagemagick_version=$(cat ./imagemagick-version)" >> $GITHUB_OUTPUT
+          echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
       - name: Prepare image
         run: docker build . -t buildenv --build-arg IMAGE_TAG=${{ matrix.image_tag }}
