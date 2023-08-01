@@ -149,18 +149,18 @@ jobs:
   
       
       - name: Prepare image
-        run: docker build . -t buildenv:${{ matrix.image_tag }} --build-arg IMAGE_TAG=${{ matrix.image_tag }}
+        run: docker build . -t buildenv --build-arg IMAGE_TAG=${{ matrix.image_tag }}
         working-directory: debs
 
       - name: Build
-        run: docker run --name build buildenv:${{ matrix.image_tag }} ${{ steps.variables.outputs.imagemagick_version }}
+        run: docker run --name build buildenv ${{ steps.variables.outputs.imagemagick_version }}
 
       - name: Retrieve built packages
         env:
           IMAGEMAGICK_VERSION: ${{ steps.variables.outputs.imagemagick_version }}
         run: |
-          docker cp imagemagick_20.04:/build/imagemagick-alfresco_$IMAGEMAGICK_VERSION_amd64.deb .
-          docker cp imagemagick_20.04:/build/imagemagick-alfresco-dev_$IMAGEMAGICK_VERSION_amd64.deb .
+          docker cp build:/build/imagemagick-alfresco_${IMAGEMAGICK_VERSION}_amd64.deb .
+          docker cp build:/build/imagemagick-alfresco-dev_${IMAGEMAGICK_VERSION}_amd64.deb .
 
       - name: Test
         run: "dpkg-deb -f imagemagick-alfresco_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb Depends | grep -qEv 'libcdt|libcgraph|libgvc|libgs9'"
