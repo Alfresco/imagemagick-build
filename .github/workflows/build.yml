@@ -59,92 +59,10 @@ jobs:
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
           version: ${{ steps.variables.outputs.imagemagick_version }}-ci-${{ steps.variables.outputs.imagemagick_release }}
           generate-pom: false
-          file: rpms/ImageMagick-$${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
+          file: rpms/ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
           classifier: el8 # FIXME
           files: rpms/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
           classifiers: el8-libs # FIXME
-          types: rpm
-          maven-username: ${{ secrets.NEXUS_USERNAME }}
-          maven-password: ${{ secrets.NEXUS_PASSWORD }}
-
-  build_rockylinux_arm64:
-    name: Rocky 8 ARM64
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Set build variables
-        id: variables
-        run: |
-          echo "imagemagick_version=$(cat ./.github/actions/imagemagick-version)" >> $GITHUB_OUTPUT
-          echo "imagemagick_release=$(cat ./.github/actions/release-version)" >> $GITHUB_OUTPUT
-      - name: Build
-        id: build
-        uses: ./.github/actions/rockylinux-arm64-build
-        with:
-          args: "${{ steps.variables.outputs.imagemagick_version }}"
-      - name: Test
-        run: "rpm -qp --requires rpms/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.aarch64.rpm | grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'"
-      - uses: actions/upload-artifact@v3
-        with:
-          name: rockylinux-arm64-rpms
-          path: rpms/*.rpm
-      - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7b0536b4e403e95365d83695c9ab3119b885ce36
-        if: startsWith(github.ref, 'refs/tags/v')
-        with:
-          group-id: org.imagemagick
-          artifact-id: imagemagick-distribution
-          repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
-          version: ${{ steps.build.outputs.built-version }}-ci-${{ steps.variables.outputs.imagemagick_release }}
-          generate-pom: false
-          file: rpms/ImageMagick-${{ steps.build.outputs.built-version }}.aarch64.rpm
-          classifier: el8-arm64
-          files: rpms/ImageMagick-libs-${{ steps.build.outputs.built-version }}.aarch64.rpm
-          classifiers: el8-libs-arm64
-          types: rpm
-          maven-username: ${{ secrets.NEXUS_USERNAME }}
-          maven-password: ${{ secrets.NEXUS_PASSWORD }}
-
-  build_centoslinux:
-    name: Centos 7
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Set build variables
-        id: variables
-        run: |
-          echo "imagemagick_version=$(cat ./.github/actions/imagemagick-version)" >> $GITHUB_OUTPUT
-          echo "imagemagick_release=$(cat ./.github/actions/release-version)" >> $GITHUB_OUTPUT
-      - name: Build
-        id: build
-        uses: ./.github/actions/centos-build
-        with:
-          args: "${{ steps.variables.outputs.imagemagick_version }}"
-      - name: Test
-        run: "rpm -qp --requires rpms/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.x86_64.rpm | grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'"
-      - uses: actions/upload-artifact@v3
-        with:
-          name: centos-rpms
-          path: rpms/*.rpm
-      - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7b0536b4e403e95365d83695c9ab3119b885ce36
-        if: startsWith(github.ref, 'refs/tags/v')
-        with:
-          group-id: org.imagemagick
-          artifact-id: imagemagick-distribution
-          repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
-          version: ${{ steps.build.outputs.built-version }}-ci-${{ steps.variables.outputs.imagemagick_release }}
-          generate-pom: false
-          file: rpms/ImageMagick-${{ steps.build.outputs.built-version }}.x86_64.rpm
-          classifier: el7
-          files: rpms/ImageMagick-libs-${{ steps.build.outputs.built-version }}.x86_64.rpm
-          classifiers: el7-libs
           types: rpm
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
@@ -196,11 +114,11 @@ jobs:
           group-id: org.imagemagick
           artifact-id: imagemagick-distribution
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
-          version: ${{ steps.build.outputs.built-version }}-ci-${{ steps.variables.outputs.imagemagick_release }}
+          version: ${{ steps.variables.outputs.imagemagick_version }}-ci-${{ steps.variables.outputs.imagemagick_release }}
           generate-pom: false
-          file: ${{ github.workspace }}/imagemagick-alfresco_${{ steps.build.outputs.built-version }}_amd64.deb
+          file: ${{ github.workspace }}/imagemagick-alfresco_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb
           classifier: ubuntu-${{ matrix.image_tag }}
-          files: ${{ github.workspace }}/imagemagick-alfresco-dev_${{ steps.build.outputs.built-version }}_amd64.deb
+          files: ${{ github.workspace }}/imagemagick-alfresco-dev_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb
           classifiers: ubuntu-${{ matrix.image_tag }}-dev
           types: deb
           maven-username: ${{ secrets.NEXUS_USERNAME }}
