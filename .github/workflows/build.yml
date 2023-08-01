@@ -12,10 +12,13 @@ jobs:
         include:
           - base_image: rockylinux:8
             target_arch: x86_64
+            nexus_classifier: el8
           - base_image: rockylinux:8
             target_arch: aarch64
+            nexus_classifier: el8-aarch64
           - base_image: centos:7
             target_arch: x86_64
+            nexus_classifier: el7
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -60,9 +63,9 @@ jobs:
           version: ${{ steps.variables.outputs.imagemagick_version }}-ci-${{ steps.variables.outputs.imagemagick_release }}
           generate-pom: false
           file: rpms/ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
-          classifier: el8 # FIXME
+          classifier: ${{ matrix.nexus_classifier }}
           files: rpms/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
-          classifiers: el8-libs # FIXME
+          classifiers: ${{ matrix.nexus_classifier }}-libs
           types: rpm
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
