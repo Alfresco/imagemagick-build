@@ -11,7 +11,15 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
+if [ -z "$2" ]; then
+    echo "second argument needs to be set - TARGET_ARCH"
+    exit 1
+fi
+
 IMAGEMAGICK_VERSION=$1
+TARGET_ARCH=$2
+
+echo "Preparing to build Imagemagick $IMAGEMAGICK_VERSION for $TARGET_ARCH..."
 
 git clone --depth 1 -b "$IMAGEMAGICK_VERSION" https://github.com/ImageMagick/ImageMagick.git
 
@@ -32,10 +40,9 @@ make srpm
 
 # Build it
 yum-builddep -y "ImageMagick-$IMAGEMAGICK_VERSION.src.rpm"
-rpmbuild --rebuild --nocheck "ImageMagick-$IMAGEMAGICK_VERSION.src.rpm"
+rpmbuild --rebuild --nocheck --target "$TARGET_ARCH" "ImageMagick-$IMAGEMAGICK_VERSION.src.rpm"
 
-
-echo "Imagemagick $IMAGEMAGICK_VERSION built successfully."
-ls  -l /root/rpmbuild/RPMS/x86_64
+echo "Imagemagick $IMAGEMAGICK_VERSION for $TARGET_ARCH built successfully."
+ls  -lR /root/rpmbuild/RPMS
 
 exit 0

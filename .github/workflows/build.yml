@@ -5,15 +5,17 @@ on:
 
 jobs:
   build_rpm:
-    name: Build on ${{ matrix.base_image }}
+    name: Build on ${{ matrix.base_image }} for ${{ matrix.target_arch }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
           - base_image: rockylinux:8
-            target: dnf
+            target_arch: x86_64
+          - base_image: rockylinux:8
+            target_arch: aarch64
           - base_image: centos:7
-            target: yum
+            target_arch: x86_64
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -29,17 +31,17 @@ jobs:
         working-directory: rpms
 
       - name: Build
-        run: docker run --name build buildenv ${{ steps.variables.outputs.imagemagick_version }}
+        run: docker run --name build buildenv ${{ steps.variables.outputs.imagemagick_version }} ${{ matrix.target_arch }}
 
       - name: Retrieve built packages
         env:
           IMAGEMAGICK_VERSION: ${{ steps.variables.outputs.imagemagick_version }}
         run: |
-          docker cp build:/root/rpmbuild/RPMS/x86_64/ .
+          docker cp build:/root/rpmbuild/RPMS/ .
           ls -l
 
       - name: Test
-        working-directory: x86_64
+        working-directory: RPMS/${{ matrix.target_arch }}
         run: >-
           rpm -qp --requires ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.x86_64.rpm |
           grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'
