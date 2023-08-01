@@ -51,7 +51,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: rpm-${{ matrix.base_image }}-${{ matrix.target_arch }}
+          name: ${{ matrix.nexus_classifier }}-rpm
           path: RPMS/${{ matrix.target_arch }}/*.rpm
       - name: Deploy to nexus
         uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7b0536b4e403e95365d83695c9ab3119b885ce36
@@ -108,7 +108,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: deb-ubuntu:${{ matrix.image_tag }}-x86_64
+          name: ubuntu${{ matrix.image_tag }}-deb
           path: "*.deb"
       - name: Deploy to nexus
         uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7b0536b4e403e95365d83695c9ab3119b885ce36
