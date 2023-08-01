@@ -9,7 +9,7 @@ RUN yum install -y epel-release git make yum-utils && \
     yum clean all
 
 WORKDIR /build
-COPY override-* /build/
+COPY after-checkout-* /build/
 
 ARG BASE_IMAGE
 ENV BASE_IMAGE=${BASE_IMAGE}
