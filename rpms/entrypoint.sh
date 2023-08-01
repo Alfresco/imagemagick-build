@@ -36,6 +36,6 @@ rpmbuild --rebuild --nocheck "ImageMagick-$IMAGEMAGICK_VERSION.src.rpm"
 
 
 echo "Imagemagick $IMAGEMAGICK_VERSION built successfully."
-ls  -l rpmbuild/RPMS/x86_64
+ls  -l /root/rpmbuild/RPMS/x86_64
 
 exit 0

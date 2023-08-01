@@ -35,7 +35,7 @@ jobs:
         env:
           IMAGEMAGICK_VERSION: ${{ steps.variables.outputs.imagemagick_version }}
         run: |
-          docker cp build:/build/rpmbuild/RPMS/x86_64/ .
+          docker cp build:/root/rpmbuild/RPMS/x86_64/ .
 
       - name: Test
         run: "rpm -qp --requires ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.x86_64.rpm | grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'"
