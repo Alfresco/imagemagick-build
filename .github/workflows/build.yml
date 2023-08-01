@@ -25,7 +25,7 @@ jobs:
           echo "imagemagick_release=$(cat ./.github/actions/release-version)" >> $GITHUB_OUTPUT
 
       - name: Prepare image
-        run: docker build . -t buildenv --build-arg BASE_IMAGE=${{ matrix.base_image }} --build-arg TARGET=${{ matrix.target }}
+        run: docker build . -t buildenv --build-arg BASE_IMAGE=${{ matrix.base_image }}
         working-directory: rpms
 
       - name: Build
