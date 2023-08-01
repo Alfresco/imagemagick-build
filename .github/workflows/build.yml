@@ -38,7 +38,7 @@ jobs:
           IMAGEMAGICK_VERSION: ${{ steps.variables.outputs.imagemagick_version }}
         run: |
           docker cp build:/root/rpmbuild/RPMS/ .
-          ls -l
+          ls -l RPMS/
 
       - name: Test
         working-directory: RPMS/${{ matrix.target_arch }}
@@ -49,7 +49,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: rockylinux-rpms
-          path: rpms/*.rpm
+          path: RPMS/${{ matrix.target_arch }}/*.rpm
       - name: Deploy to nexus
         uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7b0536b4e403e95365d83695c9ab3119b885ce36
         if: startsWith(github.ref, 'refs/tags/v')
