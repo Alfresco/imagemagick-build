@@ -48,7 +48,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: rockylinux-rpms
+          name: rpm-${{ matrix.base_image }}-${{ matrix.target_arch }}
           path: RPMS/${{ matrix.target_arch }}/*.rpm
       - name: Deploy to nexus
         uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7b0536b4e403e95365d83695c9ab3119b885ce36
@@ -68,7 +68,7 @@ jobs:
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
 
   build_ubuntu:
-    name: Build on ubuntu ${{ matrix.image_tag }}
+    name: Build on ubuntu:${{ matrix.image_tag }} for x86_64
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -105,7 +105,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: ubuntu-${{ matrix.image_tag }}-deb
+          name: deb-ubuntu:${{ matrix.image_tag }}-x86_64
           path: "*.deb"
       - name: Deploy to nexus
         uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@7b0536b4e403e95365d83695c9ab3119b885ce36
