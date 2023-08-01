@@ -4,25 +4,40 @@ on:
   push:
 
 jobs:
-  build_rockylinux:
-    name: Rocky 8
+  build_rpm:
+    name: Build on ${{ matrix.base_image }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        base_image:
+          - rockylinux:8
+          - centos:7
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Set build variables
         id: variables
         run: |
           echo "imagemagick_version=$(cat ./.github/actions/imagemagick-version)" >> $GITHUB_OUTPUT
           echo "imagemagick_release=$(cat ./.github/actions/release-version)" >> $GITHUB_OUTPUT
+
+      - name: Prepare image
+        run: docker build . -t buildenv --build-arg BASE_IMAGE=${{ matrix.base_image }}
+        working-directory: rpms
+
       - name: Build
-        id: build
-        uses: ./.github/actions/rockylinux-build
-        with:
-          args: 
-             "${{ steps.variables.outputs.imagemagick_version }}"
+        run: docker run --name build buildenv ${{ steps.variables.outputs.imagemagick_version }}
+
+      - name: Retrieve built packages
+        env:
+          IMAGEMAGICK_VERSION: ${{ steps.variables.outputs.imagemagick_version }}
+        run: |
+          docker cp build:/build/rpmbuild/RPMS/x86_64/ .
+
       - name: Test
-        run: "rpm -qp --requires rpms/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.x86_64.rpm | grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'"
+        run: "rpm -qp --requires ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.x86_64.rpm | grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'"
+
       - uses: actions/upload-artifact@v3
         with:
           name: rockylinux-rpms
@@ -63,8 +78,7 @@ jobs:
         id: build
         uses: ./.github/actions/rockylinux-arm64-build
         with:
-          args: 
-             "${{ steps.variables.outputs.imagemagick_version }}"
+          args: "${{ steps.variables.outputs.imagemagick_version }}"
       - name: Test
         run: "rpm -qp --requires rpms/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.aarch64.rpm | grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'"
       - uses: actions/upload-artifact@v3
@@ -103,10 +117,9 @@ jobs:
         id: build
         uses: ./.github/actions/centos-build
         with:
-          args: 
-             "${{ steps.variables.outputs.imagemagick_version }}"
+          args: "${{ steps.variables.outputs.imagemagick_version }}"
       - name: Test
-        run:  "rpm -qp --requires rpms/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.x86_64.rpm | grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'"
+        run: "rpm -qp --requires rpms/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.x86_64.rpm | grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'"
       - uses: actions/upload-artifact@v3
         with:
           name: centos-rpms
@@ -127,7 +140,7 @@ jobs:
           types: rpm
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
- 
+
   build_ubuntu:
     name: Build on ubuntu ${{ matrix.image_tag }}
     runs-on: ubuntu-latest
@@ -140,14 +153,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
+
       - name: Set build variables
         id: variables
         run: |
           echo "imagemagick_version=$(cat ./.github/actions/imagemagick-version)" >> $GITHUB_OUTPUT
           echo "imagemagick_release=$(cat ./.github/actions/release-version)" >> $GITHUB_OUTPUT
-  
-      
+
       - name: Prepare image
         run: docker build . -t buildenv --build-arg IMAGE_TAG=${{ matrix.image_tag }}
         working-directory: debs
@@ -164,7 +176,7 @@ jobs:
 
       - name: Test
         run: "dpkg-deb -f imagemagick-alfresco_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb Depends | grep -qEv 'libcdt|libcgraph|libgvc|libgs9'"
-      
+
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu-${{ matrix.image_tag }}-deb
