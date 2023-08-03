@@ -1,18 +1,41 @@
 # imagemagick-build
 
-This repo is building ImageMagick v7 packages for [RockyLinux8](https://github.com/Alfresco/imagemagick-build/tree/main/.github/actions/rockylinux-build), [Centos7](https://github.com/Alfresco/imagemagick-build/tree/main/.github/actions/centos-build), [Ubuntu-18.04](https://github.com/Alfresco/imagemagick-build/tree/main/.github/actions/Ubuntu18.04-build), [Ubuntu20.04](https://github.com/Alfresco/imagemagick-build/tree/main/.github/actions/Ubuntu20.04-build) & [Ubuntu22.04](https://github.com/Alfresco/imagemagick-build/tree/main/.github/actions/Ubuntu22.04-build) that are
-not available elsewhere and that are required by
-[Alfresco](https://docs.alfresco.com/content-services/latest/support/) to work properly.
+This repo is building ImageMagick v7 deb/rpm packages for multiple distributions:
 
-Notes:- 
+* Centos 7 (x86_64 only)
+* RockyLinux 8 (x86_64 and aarch64)
+* Ubuntu 22.04 (x86_64 only)
+* Ubuntu 20.04 (x86_64 only)
+* Ubuntu 18.04 (x86_64 only)
 
-* ImageMagick v7 for [Centos7](https://github.com/Alfresco/imagemagick-build/tree/main/.github/actions/centos-build) & [Rockylinux8](https://github.com/Alfresco/imagemagick-build/tree/main/.github/actions/rockylinux-build) are the generic packages which can be used for Redhat7 & Redhat8 respectively.
+that are required by
+[Alfresco](https://docs.alfresco.com/content-services/latest/support/) to work
+properly.
 
-* Packages are published under [Releases](https://github.com/Alfresco/imagemagick-build/releases) section and on our [Nexus](https://nexus.alfresco.com/nexus/service/local/repositories/thirdparty/content/org/imagemagick/imagemagick-distribution/) instance.
+Notes:
+
+ImageMagick packages built on Centos 7 and RockyLinux 8 are tested also on
+Redhat7 and Redhat8 on the [Alfresco Ansible
+playbook](https://github.com/Alfresco/alfresco-ansible-deployment).
+
+Packages are published under our
+[Nexus](https://nexus.alfresco.com/nexus/#nexus-search;quick~imagemagick-distribution)
+instance.
 
 ## Release a new version
 
-* Bump ImageMagick env var version in [imagemagick-version file](https://github.com/Alfresco/imagemagick-build/blob/main/.github/actions/imagemagick-version) via PR
+Raise a PR to:
+
+* Bump the ImageMagick version you want to build in [imagemagick-version
+  file](imagemagick-version)
+* Bump the version of the package in [release-version file](release-version)
+  (restart from 1 when increasing imagemagick version)
+
+Once merged, trigger the release workflow:
+
 * Create a new tag `git tag -s vN.N.N -m vN.N.N` following semantic versioning
 * Push it `git push --tags origin vN.N.N`
-* Draft a [new release](https://github.com/Alfresco/imagemagick-build/releases/new) using the previous tag as source and use the `Generate release notes` function to generate the changelog.
+* Draft a [new
+  release](https://github.com/Alfresco/imagemagick-build/releases/new) using the
+  previous tag as source and use the `Generate release notes` function to
+  generate the changelog.
