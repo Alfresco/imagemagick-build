@@ -47,10 +47,12 @@ jobs:
 
       - name: Test
         working-directory: RPMS/${{ matrix.target_arch }}
-        run: >-
+        run: |
           rpm -qp --requires ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm |
           grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'
-
+          sudo yum localinstall -y RPMS/${{ matrix.target_arch }}/*.rpm
+          convert --version
+          
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.nexus_classifier }}-rpm
@@ -106,8 +108,11 @@ jobs:
           docker cp build:/build/imagemagick-alfresco-dev_${IMAGEMAGICK_VERSION}_amd64.deb .
 
       - name: Test
-        run: "dpkg-deb -f imagemagick-alfresco_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb Depends | grep -qEv 'libcdt|libcgraph|libgvc|libgs9'"
-
+        run: |
+          "dpkg-deb -f imagemagick-alfresco_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb Depends | grep -qEv 'libcdt|libcgraph|libgvc|libgs9'"
+           sudo dpkg -i imagemagick-alfresco_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb
+           convert --version
+           
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu${{ matrix.image_tag }}-deb
