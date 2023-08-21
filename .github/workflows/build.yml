@@ -50,7 +50,7 @@ jobs:
         run: |
           rpm -qp --requires ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm |
           grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'
-          sudo yum localinstall -y RPMS/${{ matrix.target_arch }}/*.rpm
+          yum localinstall -y RPMS/${{ matrix.target_arch }}/*.rpm
           convert --version
           
       - uses: actions/upload-artifact@v3
@@ -71,65 +71,5 @@ jobs:
           files: rpms/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
           classifiers: ${{ matrix.nexus_classifier }}-libs
           types: rpm
-          maven-username: ${{ secrets.NEXUS_USERNAME }}
-          maven-password: ${{ secrets.NEXUS_PASSWORD }}
-
-  build_ubuntu:
-    name: Build on ubuntu:${{ matrix.image_tag }} for x86_64
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        image_tag:
-          - 22.04
-          - 20.04
-          - 18.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Set build variables
-        id: variables
-        run: |
-          echo "imagemagick_version=$(cat ./imagemagick-version)" >> $GITHUB_OUTPUT
-          echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
-
-      - name: Prepare image
-        run: docker build . -t buildenv --build-arg IMAGE_TAG=${{ matrix.image_tag }}
-        working-directory: debs
-
-      - name: Build
-        run: docker run --name build buildenv ${{ steps.variables.outputs.imagemagick_version }}
-
-      - name: Retrieve built packages
-        env:
-          IMAGEMAGICK_VERSION: ${{ steps.variables.outputs.imagemagick_version }}
-        run: |
-          docker cp build:/build/imagemagick-alfresco_${IMAGEMAGICK_VERSION}_amd64.deb .
-          docker cp build:/build/imagemagick-alfresco-dev_${IMAGEMAGICK_VERSION}_amd64.deb .
-
-      - name: Test
-        run: |
-          "dpkg-deb -f imagemagick-alfresco_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb Depends | grep -qEv 'libcdt|libcgraph|libgvc|libgs9'"
-           sudo dpkg -i imagemagick-alfresco_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb
-           convert --version
-           
-      - uses: actions/upload-artifact@v3
-        with:
-          name: ubuntu${{ matrix.image_tag }}-deb
-          path: "*.deb"
-      - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@9fd78f71c1ccbad03b79b81db541693cd9cfc89b
-        if: startsWith(github.ref, 'refs/tags/v')
-        with:
-          group-id: org.imagemagick
-          artifact-id: imagemagick-distribution
-          repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
-          version: ${{ steps.variables.outputs.imagemagick_version }}-ci-${{ steps.variables.outputs.imagemagick_release }}
-          generate-pom: false
-          file: ${{ github.workspace }}/imagemagick-alfresco_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb
-          classifier: ubuntu-${{ matrix.image_tag }}
-          files: ${{ github.workspace }}/imagemagick-alfresco-dev_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb
-          classifiers: ubuntu-${{ matrix.image_tag }}-dev
-          types: deb
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
