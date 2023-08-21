@@ -12,12 +12,12 @@ jobs:
     strategy:
       matrix:
         include:
-          - base_image: rockylinux:8
-            target_arch: x86_64
-            nexus_classifier: el8
-          - base_image: rockylinux:8
-            target_arch: aarch64
-            nexus_classifier: el8-aarch64
+          # - base_image: rockylinux:8
+          #   target_arch: x86_64
+          #   nexus_classifier: el8
+          # - base_image: rockylinux:8
+          #   target_arch: aarch64
+          #   nexus_classifier: el8-aarch64
           - base_image: centos:7
             target_arch: x86_64
             nexus_classifier: el7
