@@ -48,6 +48,7 @@ jobs:
       - name: Test
         working-directory: RPMS/${{ matrix.target_arch }}
         run: |
+          docker start build
           docker exec build yum install -y /root/rpmbuild/RPMS/${{ matrix.target_arch }}/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm  /root/rpmbuild/RPMS/${{ matrix.target_arch }}/ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
           rpm -qp --requires ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm |
           grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'
