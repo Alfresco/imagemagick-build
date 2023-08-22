@@ -45,11 +45,6 @@ jobs:
           docker cp build:/root/rpmbuild/RPMS/ .
           ls -l RPMS/
 
-      - name: Test Install
-        run: |
-            docker cp ./rpms/run_test.sh build:/run_test.sh
-            docker exec build /bin/bash -c "/run_test.sh"
-
       - name: Test
         working-directory: RPMS/${{ matrix.target_arch }}
         run: >-

@@ -45,4 +45,11 @@ rpmbuild --rebuild --nocheck --target "$TARGET_ARCH" "ImageMagick-$IMAGEMAGICK_V
 echo "Imagemagick $IMAGEMAGICK_VERSION for $TARGET_ARCH built successfully."
 ls  -lR /root/rpmbuild/RPMS
 
+# Install packages
+yum install -y /root/rpmbuild/RPMS/${TARGET_ARCH}/ImageMagick-libs-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm
+yum install -y /root/rpmbuild/RPMS/${TARGET_ARCH}/ImageMagick-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm
+
+# Test Command
+convert -version
+
 exit 0
