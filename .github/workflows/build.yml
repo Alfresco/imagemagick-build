@@ -41,7 +41,7 @@ jobs:
         run: docker build . -t buildenv --build-arg BASE_IMAGE=${{ matrix.base_image }}
         working-directory: rpms
 
-      - name: Build and install
+      - name: Build and Install
         run: docker run --name build buildenv ${{ steps.variables.outputs.imagemagick_version }} ${{ matrix.target_arch }}
 
       - name: Retrieve built packages
