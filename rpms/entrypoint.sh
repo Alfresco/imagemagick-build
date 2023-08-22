@@ -52,4 +52,10 @@ yum install -y /root/rpmbuild/RPMS/${TARGET_ARCH}/ImageMagick-$IMAGEMAGICK_VERSI
 # Test Command
 convert -version
 
+# Create test image file
+convert  -size 32x32 xc:transparent test.png
+
+# Convert png to jpg
+convert test.png test1.jpg
+
 exit 0
