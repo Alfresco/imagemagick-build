@@ -36,10 +36,13 @@ ls -l ../*.deb
 # Install packages
 dpkg -i ../imagemagick-alfresco_${IMAGEMAGICK_VERSION}_amd64.deb
 
+# Set the Path
+export PATH="/opt/imagemagick-7/bin:$PATH"
+
 # Test Command
 convert -version
 
-# Create image file
+# Create test image file
 convert  -size 32x32 xc:transparent test.png
 
 # Convert png to jpg
