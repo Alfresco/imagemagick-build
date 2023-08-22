@@ -37,7 +37,7 @@ jobs:
 
       - name: Build and install
         run: docker run --name build buildenv ${{ steps.variables.outputs.imagemagick_version }} ${{ matrix.target_arch }} bash -c "
-             yum install -y /root/rpmbuild/RPMSImageMagick-libs-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm /root/rpmbuild/RPMS/${{ matrix.target_arch }}/ImageMagick-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm &&
+             yum install -y /root/rpmbuild/RPMS/${{ matrix.target_arch }}/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm /root/rpmbuild/RPMS/${{ matrix.target_arch }}/ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm &&
              convert --version"
 
       - name: Retrieve built packages
