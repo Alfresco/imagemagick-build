@@ -35,8 +35,13 @@ jobs:
         run: docker build . -t buildenv --build-arg BASE_IMAGE=${{ matrix.base_image }}
         working-directory: rpms
 
-      - name: Build
-        run: docker run --name build buildenv ${{ steps.variables.outputs.imagemagick_version }} ${{ matrix.target_arch }}
+      - name: Build and Test
+        run: |
+          docker run --name build buildenv ${{ steps.variables.outputs.imagemagick_version }} ${{ matrix.target_arch }}
+          docker exec build yum install -y /root/rpmbuild/RPMS/${{ matrix.target_arch }}/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm /root/rpmbuild/RPMS/${{ matrix.target_arch }}/ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
+          docker exec build convert -version
+          rpm -qp --requires ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm |
+          grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'
 
       - name: Retrieve built packages
         env:
@@ -44,14 +49,6 @@ jobs:
         run: |
           docker cp build:/root/rpmbuild/RPMS/ .
           ls -l RPMS/
-
-      - name: Test
-        working-directory: RPMS/${{ matrix.target_arch }}
-        run: |
-          docker start build
-          docker exec build yum install -y /root/rpmbuild/RPMS/${{ matrix.target_arch }}/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm  /root/rpmbuild/RPMS/${{ matrix.target_arch }}/ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
-          rpm -qp --requires ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm |
-          grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'
 
       - uses: actions/upload-artifact@v3
         with:
