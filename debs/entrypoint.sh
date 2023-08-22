@@ -33,4 +33,7 @@ dpkg-buildpackage -b -uc
 echo "Imagemagick $IMAGEMAGICK_VERSION built successfully."
 ls -l ../*.deb
 
+# Install packages
+dpkg -i ../imagemagick-alfresco_$$IMAGEMAGICK_VERSION_amd64.deb
+
 exit 0
