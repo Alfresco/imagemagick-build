@@ -15,7 +15,7 @@ jobs:
           - base_image: rockylinux:8
             target_arch: x86_64
             nexus_classifier: el8
-          - base_image: arm64v8/rockylinux:8
+          - base_image: rockylinux:8
             target_arch: aarch64
             nexus_classifier: el8-aarch64
           - base_image: centos:7
@@ -24,12 +24,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
 
       - name: Set build variables
         id: variables
