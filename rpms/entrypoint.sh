@@ -45,7 +45,7 @@ rpmbuild --rebuild --nocheck --target "$TARGET_ARCH" "ImageMagick-$IMAGEMAGICK_V
 echo "Imagemagick $IMAGEMAGICK_VERSION for $TARGET_ARCH built successfully."
 ls  -lR /root/rpmbuild/RPMS
 
-if [ "$TARGET_ARCH" != "aarch64" ]; then
+if [ "$TARGET_ARCH" = "aarch64" ]; then
     echo "Tests for this architecture are not available yet"
     exit 0
 fi
