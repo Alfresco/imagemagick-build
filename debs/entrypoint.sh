@@ -33,19 +33,19 @@ dpkg-buildpackage -b -uc
 echo "Imagemagick $IMAGEMAGICK_VERSION built successfully."
 ls -l ../*.deb
 
-# Install packages
+echo "Installing package"
 dpkg -i ../imagemagick-alfresco_${IMAGEMAGICK_VERSION}_amd64.deb
 
-# Set the Path
+echo "Exporting the path of the package"
 export PATH="/opt/imagemagick-7/bin:$PATH"
 
-# Test Command
+echo "Testing convert command"
 convert -version
 
-# Create test image file
+echo "Creating test image file"
 convert  -size 32x32 xc:transparent test.png
 
-# Convert png to jpg
+echo "Converting png to jpg"
 convert test.png test1.jpg
 
 exit 0
