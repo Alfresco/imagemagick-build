@@ -49,6 +49,9 @@ if [ "$TARGET_ARCH" != "aarch64" ]; then
     echo "Tests for this architecture are not available yet"
     exit 0
 fi
+
+echo "Testing package"
+rpm -qp --requires /root/rpmbuild/RPMS/${TARGET_ARCH}/ImageMagick-libs-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm | grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'
 echo "Installing packages"
 yum install -y /root/rpmbuild/RPMS/${TARGET_ARCH}/ImageMagick-libs-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm
 yum install -y /root/rpmbuild/RPMS/${TARGET_ARCH}/ImageMagick-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm
