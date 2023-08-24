@@ -45,4 +45,25 @@ rpmbuild --rebuild --nocheck --target "$TARGET_ARCH" "ImageMagick-$IMAGEMAGICK_V
 echo "Imagemagick $IMAGEMAGICK_VERSION for $TARGET_ARCH built successfully."
 ls  -lR /root/rpmbuild/RPMS
 
+if [ "$TARGET_ARCH" = "aarch64" ]; then
+    echo "Tests for this architecture are not available yet"
+    exit 0
+fi
+
+echo "Testing package expected dependencies"
+rpm -qp --requires /root/rpmbuild/RPMS/${TARGET_ARCH}/ImageMagick-libs-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm | grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'
+
+echo "Installing packages"
+yum install -y /root/rpmbuild/RPMS/${TARGET_ARCH}/ImageMagick-libs-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm
+yum install -y /root/rpmbuild/RPMS/${TARGET_ARCH}/ImageMagick-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm
+
+echo "Testing convert command"
+convert -version
+
+echo "Creating test image file"
+convert  -size 32x32 xc:transparent test.png
+
+echo "Converting png to jpg"
+convert test.png test1.jpg
+
 exit 0

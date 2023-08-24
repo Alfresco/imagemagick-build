@@ -35,7 +35,7 @@ jobs:
         run: docker build . -t buildenv --build-arg BASE_IMAGE=${{ matrix.base_image }}
         working-directory: rpms
 
-      - name: Build
+      - name: Build and Install
         run: docker run --name build buildenv ${{ steps.variables.outputs.imagemagick_version }} ${{ matrix.target_arch }}
 
       - name: Retrieve built packages
@@ -44,12 +44,6 @@ jobs:
         run: |
           docker cp build:/root/rpmbuild/RPMS/ .
           ls -l RPMS/
-
-      - name: Test
-        working-directory: RPMS/${{ matrix.target_arch }}
-        run: >-
-          rpm -qp --requires ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm |
-          grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'
 
       - uses: actions/upload-artifact@v3
         with:
@@ -95,7 +89,7 @@ jobs:
         run: docker build . -t buildenv --build-arg IMAGE_TAG=${{ matrix.image_tag }}
         working-directory: debs
 
-      - name: Build
+      - name: Build and Install
         run: docker run --name build buildenv ${{ steps.variables.outputs.imagemagick_version }}
 
       - name: Retrieve built packages
@@ -104,9 +98,6 @@ jobs:
         run: |
           docker cp build:/build/imagemagick-alfresco_${IMAGEMAGICK_VERSION}_amd64.deb .
           docker cp build:/build/imagemagick-alfresco-dev_${IMAGEMAGICK_VERSION}_amd64.deb .
-
-      - name: Test
-        run: "dpkg-deb -f imagemagick-alfresco_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb Depends | grep -qEv 'libcdt|libcgraph|libgvc|libgs9'"
 
       - uses: actions/upload-artifact@v3
         with:
