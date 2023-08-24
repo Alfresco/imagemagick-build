@@ -33,7 +33,7 @@ dpkg-buildpackage -b -uc
 echo "Imagemagick $IMAGEMAGICK_VERSION built successfully."
 ls -l ../*.deb
 
-echo "Testing package"
+echo "Testing package expected dependencies"
 dpkg-deb -f ../imagemagick-alfresco_${IMAGEMAGICK_VERSION}_amd64.deb  Depends | grep -qEv 'libcdt|libcgraph|libgvc|libgs9'
 
 echo "Installing package"
