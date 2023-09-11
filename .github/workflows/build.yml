@@ -23,7 +23,7 @@ jobs:
             nexus_classifier: el7
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set build variables
         id: variables
@@ -77,7 +77,7 @@ jobs:
           - 18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set build variables
         id: variables
