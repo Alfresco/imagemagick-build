@@ -50,7 +50,7 @@ jobs:
           name: ${{ matrix.nexus_classifier }}-rpm
           path: RPMS/${{ matrix.target_arch }}/*.rpm
       - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@9fd78f71c1ccbad03b79b81db541693cd9cfc89b
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@3741d4445541db169728841ebedb8725b51f0b45
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           group-id: org.imagemagick
@@ -104,7 +104,7 @@ jobs:
           name: ubuntu${{ matrix.image_tag }}-deb
           path: "*.deb"
       - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@9fd78f71c1ccbad03b79b81db541693cd9cfc89b
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@3741d4445541db169728841ebedb8725b51f0b45
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           group-id: org.imagemagick
