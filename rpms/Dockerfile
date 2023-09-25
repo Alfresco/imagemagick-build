@@ -3,7 +3,11 @@ ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
 RUN yum install -y epel-release git make yum-utils && \
-    yum-config-manager --enable powertools && \
+    if [ "$BASE_IMAGE" = "rockylinux:9" ]; then \
+        dnf config-manager --enable crb; \
+    else \
+        yum-config-manager --enable powertools; \
+    fi && \
     yum install -y rpm-build && \
     yum group install -y "Development Tools" && \
     yum clean all
