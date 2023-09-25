@@ -2,15 +2,15 @@ ARG BASE_IMAGE
 
 FROM ${BASE_IMAGE}
 
-RUN yum install -y epel-release git make yum-utils && \
+RUN yum install -y epel-release git make yum-utils rpm-build && \
+    yum group install -y "Development Tools" && \
+    yum clean all && \
     if [ "$BASE_IMAGE" = "rockylinux:9" ]; then \
-        dnf config-manager --enable crb; \
+        dnf install -y dnf-plugins-core && \
+        dnf config-manager --set-enabled crb; \
     else \
         yum-config-manager --enable powertools; \
-    fi && \
-    yum install -y rpm-build && \
-    yum group install -y "Development Tools" && \
-    yum clean all
+    fi
 
 WORKDIR /build
 COPY after-checkout-* /build/
