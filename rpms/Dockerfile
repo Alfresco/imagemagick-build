@@ -9,15 +9,6 @@ RUN yum install -y epel-release git make yum-utils rpm-build && \
 ARG BASE_IMAGE
 ENV BASE_IMAGE=${BASE_IMAGE}
 
-RUN if [ "$BASE_IMAGE" = "rockylinux:9" ]; then \
-        dnf install -y dnf-plugins-core && \
-        dnf config-manager --set-enabled crb && \
-        yum clean all; \
-    else \
-        yum-config-manager --enable powertools && \
-        yum clean all; \
-    fi
-
 WORKDIR /build
 COPY after-checkout-* /build/
 
