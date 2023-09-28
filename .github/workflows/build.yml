@@ -61,9 +61,9 @@ jobs:
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
           version: ${{ steps.variables.outputs.imagemagick_version }}-ci-${{ steps.variables.outputs.imagemagick_release }}
           generate-pom: false
-          file: rpms/ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
+          file: RPMS/${{ matrix.target_arch }}/ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
           classifier: ${{ matrix.nexus_classifier }}
-          files: rpms/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
+          files: RPMS/${{ matrix.target_arch }}/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
           classifiers: ${{ matrix.nexus_classifier }}-libs
           types: rpm
           maven-username: ${{ secrets.NEXUS_USERNAME }}
