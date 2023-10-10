@@ -105,28 +105,31 @@ jobs:
       - name: list RPMs
         run: ls -R
 
-      - name: Create a fresh OS container
+      - name: Create a container
         run: |
             docker run --name testenv -d -it ${{ matrix.base_image }}
             sleep 5
 
-      - name: Copy RPMs to the fresh container
+      - name: Copy RPMs
         run: |
           docker cp ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm testenv:/
           docker cp ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm testenv:/
 
-
-      - name: Install RPMs on the fresh container
+      - name: Install RPMs
         run: |
           docker exec -t testenv yum install -y epel-release
           docker exec -t testenv yum install -y ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
           docker exec -t testenv yum install -y ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
         
-      - name: Install RPMs on the fresh container
+      - name: Test RPMs output
         run: |
+           echo "ldd output of convert"
            docker exec -t testenv ldd /usr/bin/convert
+           echo echo "Testing convert command"
            docker exec -t testenv convert -version
+           echo "Creating test image file"
            convert  -size 32x32 xc:transparent test.png
+           echo "Converting png to jpg"
            convert test.png test1.jpg
 
   build_ubuntu:
