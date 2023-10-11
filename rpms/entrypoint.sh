@@ -30,6 +30,7 @@ sed -i '/%package lib/a AutoReq: no' ImageMagick.spec.in
 
 AFTER_CHECKOUT_HOOK_SCRIPT="../after-checkout-${BASE_IMAGE//:/}-$IMAGEMAGICK_VERSION.sh"
 if [ -x "$AFTER_CHECKOUT_HOOK_SCRIPT" ]; then
+    echo "Running $AFTER_CHECKOUT_HOOK_SCRIPT"
     "$AFTER_CHECKOUT_HOOK_SCRIPT"
 fi
 
