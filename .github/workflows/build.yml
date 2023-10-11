@@ -54,7 +54,6 @@ jobs:
           name: ${{ matrix.nexus_classifier }}-rpm
           path: RPMS/${{ matrix.target_arch }}/*.rpm
 
-
   Test:
      name: Test on ${{ matrix.base_image }} for ${{ matrix.target_arch }}
      runs-on: ubuntu-latest
