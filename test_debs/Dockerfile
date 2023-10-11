@@ -8,14 +8,9 @@ ENV DEBCONF_NOWARNINGS=yes
 ENV IMAGE_TAG=$IMAGE_TAG
 ENV LOGNAME=root
 
-RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/99yes
-RUN apt-get update && \
-    apt-get install build-essential git dpkg-dev devscripts equivs
+RUN apt-get update
 
-WORKDIR /build
-
-ADD debian/ /build/debian
-ADD after-checkout-*.sh /build/
+ADD *.deb /
 
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

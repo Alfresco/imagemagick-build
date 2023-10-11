@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix_debs: ${{ steps.set-matrix.outputs.matrix }}
     steps:
      - name: Checkout to repository
        uses: actions/checkout@v3
@@ -17,7 +18,7 @@ jobs:
        id: set-matrix
        run: |
          echo "matrix=$(jq -c . < ./rpms/config.json)" >> $GITHUB_OUTPUT
-
+         echo "matrix_debs=$(jq -c . < ./debs/config.json)" >> $GITHUB_OUTPUT
   build:
     name: Build on ${{ matrix.base_image }} for ${{ matrix.target_arch }}
     runs-on: ubuntu-latest
@@ -142,12 +143,11 @@ jobs:
   build_ubuntu:
     name: Build on ubuntu:${{ matrix.image_tag }} for x86_64
     runs-on: ubuntu-latest
+    needs: 
+      - configure
     strategy:
-      matrix:
-        image_tag:
-          - 22.04
-          - 20.04
-          - 18.04
+      matrix: ${{ fromJson(needs.configure.outputs.matrix_debs) }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -158,7 +158,7 @@ jobs:
           echo "imagemagick_version=$(cat ./imagemagick-version)" >> $GITHUB_OUTPUT
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
-      - name: Prepare image
+      - name: Prepare test image
         run: docker build . -t buildenv --build-arg IMAGE_TAG=${{ matrix.image_tag }}
         working-directory: debs
 
@@ -176,6 +176,70 @@ jobs:
         with:
           name: ubuntu${{ matrix.image_tag }}-deb
           path: "*.deb"
+
+  test_ubuntu:
+    name: Test on ubuntu:${{ matrix.image_tag }} for x86_64
+    runs-on: ubuntu-latest
+    needs: 
+      - configure
+      - build_ubuntu
+    strategy:
+      matrix: ${{ fromJson(needs.configure.outputs.matrix_debs) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set build variables
+        id: variables
+        run: |
+          echo "imagemagick_version=$(cat ./imagemagick-version)" >> $GITHUB_OUTPUT
+          echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
+
+      - name: Download DEBs
+        uses: actions/download-artifact@v3
+        with:
+          name: ubuntu${{ matrix.image_tag }}-deb
+          path: test_debs/
+
+      - name: List Debs
+        run: ls -R test_debs/*.deb
+
+      - name: Prepare test image
+        run: docker build . -t testenv --build-arg IMAGE_TAG=${{ matrix.image_tag }}
+        working-directory: test_debs
+
+      - name: Install & Test Packages
+        run: docker run --name buildtest testenv ${{ steps.variables.outputs.imagemagick_version }}
+
+  deploy_ubuntu:
+    name: Deploy on ubuntu:${{ matrix.image_tag }} for x86_64
+    runs-on: ubuntu-latest
+    needs: 
+      - configure
+      - build_ubuntu
+      - test_ubuntu
+    strategy:
+      matrix: ${{ fromJson(needs.configure.outputs.matrix_debs) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set build variables
+        id: variables
+        run: |
+          echo "imagemagick_version=$(cat ./imagemagick-version)" >> $GITHUB_OUTPUT
+          echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
+
+      - name: Download DEBs
+        uses: actions/download-artifact@v3
+        with:
+          name: ubuntu${{ matrix.image_tag }}-deb
+
+      - name: List Debs
+        run: ls -R test_debs/*.deb
+
       - name: Deploy to nexus
         uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@9fd78f71c1ccbad03b79b81db541693cd9cfc89b
         if: startsWith(github.ref, 'refs/tags/v')
@@ -185,9 +249,9 @@ jobs:
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
           version: ${{ steps.variables.outputs.imagemagick_version }}-ci-${{ steps.variables.outputs.imagemagick_release }}
           generate-pom: false
-          file: ${{ github.workspace }}/imagemagick-alfresco_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb
+          file: imagemagick-alfresco_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb
           classifier: ubuntu-${{ matrix.image_tag }}
-          files: ${{ github.workspace }}/imagemagick-alfresco-dev_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb
+          files: imagemagick-alfresco-dev_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb
           classifiers: ubuntu-${{ matrix.image_tag }}-dev
           types: deb
           maven-username: ${{ secrets.NEXUS_USERNAME }}
