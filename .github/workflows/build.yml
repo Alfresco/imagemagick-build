@@ -81,7 +81,7 @@ jobs:
           path: test_rpms/
 
       - name: List RPMs
-        run: ls -R test/*.rpm
+        run: ls -R test_rpms/*.rpm
 
       - name: Create a container
         run: |
@@ -89,9 +89,9 @@ jobs:
 
       - name: Prepare image
         run: docker build . -t testenv --build-arg BASE_IMAGE=${{ matrix.base_image }}
-        working-directory: test
+        working-directory: test_rpms
 
-      - name: Build and Test
+      - name: Install & Test Packages
         run: docker run --name buildtest testenv ${{ steps.variables.outputs.imagemagick_version }} ${{ matrix.target_arch }}
       
   deploy:
