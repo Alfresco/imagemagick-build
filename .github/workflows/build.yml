@@ -118,7 +118,7 @@ jobs:
       - build
       - test
     strategy:
-      matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.configure.outputs.matrix_test) }}
 
     steps:
       - name: Checkout
