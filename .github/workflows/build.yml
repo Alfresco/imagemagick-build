@@ -6,27 +6,28 @@ on:
       - README.md
 
 jobs:
-  build_rpm:
-    name: Build on ${{ matrix.base_image }} for ${{ matrix.target_arch }}
+  configure:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+     - name: Checkout to repository
+       uses: actions/checkout@v3
+     - name: Set matrix data
+       id: set-matrix
+       run: |
+         echo "matrix=$(jq -c . < ./config.json)" >> $GITHUB_OUTPUT
+
+  Build: Build on ${{ matrix.base_image }} for ${{ matrix.target_arch }}
+    name: Build
+    runs-on: ubuntu-latest
+    needs: configure
     strategy:
-      matrix:
-        include:
-          - base_image: rockylinux:9
-            target_arch: x86_64
-            nexus_classifier: el9
-          - base_image: rockylinux:8
-            target_arch: x86_64
-            nexus_classifier: el8
-          - base_image: rockylinux:8
-            target_arch: aarch64
-            nexus_classifier: el8-aarch64
-          - base_image: centos:7
-            target_arch: x86_64
-            nexus_classifier: el7
+      matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
+        
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: Set build variables
         id: variables
@@ -52,85 +53,75 @@ jobs:
         with:
           name: ${{ matrix.nexus_classifier }}-rpm
           path: RPMS/${{ matrix.target_arch }}/*.rpm
-      - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@9fd78f71c1ccbad03b79b81db541693cd9cfc89b
-        if: startsWith(github.ref, 'refs/tags/v')
-        with:
-          group-id: org.imagemagick
-          artifact-id: imagemagick-distribution
-          repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
-          version: ${{ steps.variables.outputs.imagemagick_version }}-ci-${{ steps.variables.outputs.imagemagick_release }}
-          generate-pom: false
-          file: RPMS/${{ matrix.target_arch }}/ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
-          classifier: ${{ matrix.nexus_classifier }}
-          files: RPMS/${{ matrix.target_arch }}/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
-          classifiers: ${{ matrix.nexus_classifier }}-libs
-          types: rpm
-          maven-username: ${{ secrets.NEXUS_USERNAME }}
-          maven-password: ${{ secrets.NEXUS_PASSWORD }}
 
-  test_and_run_command:
-     name: Test and Run Command on ${{ matrix.base_image }} for ${{ matrix.target_arch }}
+
+  Test:
+     name: Test on ${{ matrix.base_image }} for ${{ matrix.target_arch }}
      runs-on: ubuntu-latest
-     needs: build_rpm
+     needs: [configure,Build]
      strategy:
-       matrix:
-         include:
-            - base_image: rockylinux:9
-              target_arch: x86_64
-              nexus_classifier: el9
-            - base_image: rockylinux:8
-              target_arch: x86_64
-              nexus_classifier: el8
-            - base_image: centos:7
-              target_arch: x86_64
-              nexus_classifier: el7
+        matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
 
      steps:
-     
-      - name: Checkout
-        uses: actions/checkout@v4
+       - name: Checkout
+         uses: actions/checkout@v2
 
-      - name: Set build variables
-        id: variables
-        run: |
-          echo "imagemagick_version=$(cat ./imagemagick-version)" >> $GITHUB_OUTPUT
-          echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
-          
-      - name: Download RPMs
-        uses: actions/download-artifact@v2
-        with:
-          name: ${{ matrix.nexus_classifier }}-rpm
+       - name: Set build variables
+         id: variables
+         run: |
+           echo "imagemagick_version=$(cat ./imagemagick-version)" >> $GITHUB_OUTPUT
+           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
-      - name: list RPMs
-        run: ls -R
+       - name: Download RPMs
+         uses: actions/download-artifact@v3
+         with:
+           name: ${{ matrix.nexus_classifier }}-rpm
 
-      - name: Create a container
-        run: |
-            docker run --name testenv -d -it ${{ matrix.base_image }}
-            sleep 5
+       - name: List RPMs
+         run: ls -R *.rpm
 
-      - name: Copy RPMs
-        run: |
-          docker cp ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm testenv:/
-          docker cp ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm testenv:/
+       - name: Create a container
+         run: |
+           docker run --name testenv -d -it ${{ matrix.base_image }}
 
-      - name: Install RPMs
-        run: |
-          docker exec -t testenv yum install -y epel-release
-          docker exec -t testenv yum install -y ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
-          docker exec -t testenv yum install -y ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
-        
-      - name: Test RPMs output
-        run: |
+       - name: Copy RPMs
+         run: |
+           docker cp ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm testenv:/
+           docker cp ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm testenv:/
+
+       - name: Install RPMs
+         run: |
+           docker exec -t testenv yum install -y epel-release
+           docker exec -t testenv yum install -y ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
+           docker exec -t testenv yum install -y ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
+
+       - name: Test RPMs output
+         run: |
            echo "ldd output of convert"
            docker exec -t testenv ldd /usr/bin/convert
-           echo echo "Testing convert command"
+           echo "Testing convert command"
            docker exec -t testenv convert -version
            echo "Creating test image file"
-           convert  -size 32x32 xc:transparent test.png
+           convert -size 32x32 xc:transparent test.png
            echo "Converting png to jpg"
            convert test.png test1.jpg
+
+       - name: Deploy to nexus
+         uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@9fd78f71c1ccbad03b79b81db541693cd9cfc89b
+         if: startsWith(github.ref, 'refs/tags/v')
+         with:
+           group-id: org.imagemagick
+           artifact-id: imagemagick-distribution
+           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
+           version: ${{ steps.variables.outputs.imagemagick_version }}-ci-${{ steps.variables.outputs.imagemagick_release }}
+           generate-pom: false
+           file: ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
+           classifier: ${{ matrix.nexus_classifier }}
+           files: ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
+           classifiers: ${{ matrix.nexus_classifier }}-libs
+           types: rpm
+           maven-username: ${{ secrets.NEXUS_USERNAME }}
+           maven-password: ${{ secrets.NEXUS_PASSWORD }}
 
   build_ubuntu:
     name: Build on ubuntu:${{ matrix.image_tag }} for x86_64
