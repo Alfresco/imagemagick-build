@@ -117,6 +117,8 @@ jobs:
       - configure
       - build
       - test
+    strategy:
+      matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
 
     steps:
       - name: Checkout
