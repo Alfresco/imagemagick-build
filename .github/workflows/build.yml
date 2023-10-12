@@ -240,7 +240,7 @@ jobs:
           name: ubuntu${{ matrix.image_tag }}-deb
 
       - name: List Debs
-        run: ls -R test_debs/*.deb
+        run: ls -R *.deb
 
       - name: Deploy to nexus
         uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@9fd78f71c1ccbad03b79b81db541693cd9cfc89b
