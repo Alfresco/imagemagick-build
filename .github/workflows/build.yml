@@ -9,25 +9,25 @@ jobs:
   configure:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix_rpms: ${{ steps.set-matrix.outputs.matrix_rpms }}
       matrix_test: ${{ steps.set-matrix.outputs.matrix_test }}
       matrix_debs: ${{ steps.set-matrix.outputs.matrix_debs }}
     steps:
      - name: Checkout to repository
-       uses: actions/checkout@v3
+       uses: actions/checkout@v4
      - name: Set matrix data
        id: set-matrix
        run: |
-         echo "matrix=$(jq -c . < ./rpms/config.json)" >> $GITHUB_OUTPUT
+         echo "matrix_rpms=$(jq -c . < ./rpms/config.json)" >> $GITHUB_OUTPUT
          echo "matrix_debs=$(jq -c . < ./debs/config.json)" >> $GITHUB_OUTPUT
-         echo "matrix_test=$(jq -c 'del(.include[] | select(.base_image == "rockylinux:8" and .target_arch == "aarch64" and .nexus_classifier == "el8-aarch64"))' < rpms/config.json)" >> $GITHUB_OUTPUT
-  build:
+         echo "matrix_test=$(jq -c 'del(.include[] | select(.target_arch == "aarch64"))' < rpms/config.json)" >> $GITHUB_OUTPUT
+  build_rpms:
     name: Build on ${{ matrix.base_image }} for ${{ matrix.target_arch }}
     runs-on: ubuntu-latest
     needs:
       - configure
     strategy:
-      matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.configure.outputs.matrix_rpms) }}
         
     steps:
       - name: Checkout
@@ -58,12 +58,12 @@ jobs:
           name: ${{ matrix.nexus_classifier }}-rpm
           path: RPMS/${{ matrix.target_arch }}/*.rpm
 
-  test:
+  test_rpms:
     name: Test on ${{ matrix.base_image }} for ${{ matrix.target_arch }}
     runs-on: ubuntu-latest
     needs:
       - configure
-      - build
+      - build_rpms
     strategy:
       matrix: ${{ fromJson(needs.configure.outputs.matrix_test) }}
 
@@ -81,31 +81,27 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ matrix.nexus_classifier }}-rpm
-          path: test_rpms/
+          path: rpms/tests/
 
       - name: List RPMs
-        run: ls -R test_rpms/*.rpm
-
-      - name: Create a container
-        run: |
-          docker run --name testenv -d -it ${{ matrix.base_image }}
+        run: ls -R rpms/tests/*.rpm
 
       - name: Prepare image
         run: docker build . -t testenv --build-arg BASE_IMAGE=${{ matrix.base_image }}
-        working-directory: test_rpms
+        working-directory: rpms/tests/
 
       - name: Install & Test Packages
         run: docker run --name buildtest testenv ${{ steps.variables.outputs.imagemagick_version }} ${{ matrix.target_arch }}
       
-  deploy:
+  deploy_rpms:
     name: Deploy ${{ matrix.base_image }} for ${{ matrix.target_arch }}
     runs-on: ubuntu-latest
     needs:
       - configure
-      - build
-      - test
+      - build_rpms
+      - test_rpms
     strategy:
-      matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.configure.outputs.matrix_rpms) }}
 
     steps:
       - name: Checkout
@@ -202,14 +198,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ubuntu${{ matrix.image_tag }}-deb
-          path: test_debs/
+          path: debs/tests/
 
       - name: List Debs
-        run: ls -R test_debs/*.deb
+        run: ls -R debs/tests/*.deb
 
       - name: Prepare test image
         run: docker build . -t testenv --build-arg IMAGE_TAG=${{ matrix.image_tag }}
-        working-directory: test_debs
+        working-directory: debs/tests/
 
       - name: Install & Test Packages
         run: docker run --name buildtest testenv ${{ steps.variables.outputs.imagemagick_version }}
