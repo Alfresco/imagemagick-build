@@ -6,24 +6,29 @@ on:
       - README.md
 
 jobs:
-  build_rpm:
+  configure:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix_rpms: ${{ steps.set-matrix.outputs.matrix_rpms }}
+      matrix_test: ${{ steps.set-matrix.outputs.matrix_test }}
+      matrix_debs: ${{ steps.set-matrix.outputs.matrix_debs }}
+    steps:
+     - name: Checkout to repository
+       uses: actions/checkout@v4
+     - name: Set matrix data
+       id: set-matrix
+       run: |
+         echo "matrix_rpms=$(jq -c . < ./rpms/config.json)" >> $GITHUB_OUTPUT
+         echo "matrix_debs=$(jq -c . < ./debs/config.json)" >> $GITHUB_OUTPUT
+         echo "matrix_test=$(jq -c 'del(.include[] | select(.target_arch == "aarch64"))' < rpms/config.json)" >> $GITHUB_OUTPUT
+  build_rpms:
     name: Build on ${{ matrix.base_image }} for ${{ matrix.target_arch }}
     runs-on: ubuntu-latest
+    needs:
+      - configure
     strategy:
-      matrix:
-        include:
-          - base_image: rockylinux:9
-            target_arch: x86_64
-            nexus_classifier: el9
-          - base_image: rockylinux:8
-            target_arch: x86_64
-            nexus_classifier: el8
-          - base_image: rockylinux:8
-            target_arch: aarch64
-            nexus_classifier: el8-aarch64
-          - base_image: centos:7
-            target_arch: x86_64
-            nexus_classifier: el7
+      matrix: ${{ fromJson(needs.configure.outputs.matrix_rpms) }}
+        
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -52,6 +57,70 @@ jobs:
         with:
           name: ${{ matrix.nexus_classifier }}-rpm
           path: RPMS/${{ matrix.target_arch }}/*.rpm
+
+  test_rpms:
+    name: Test on ${{ matrix.base_image }} for ${{ matrix.target_arch }}
+    runs-on: ubuntu-latest
+    needs:
+      - configure
+      - build_rpms
+    strategy:
+      matrix: ${{ fromJson(needs.configure.outputs.matrix_test) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set build variables
+        id: variables
+        run: |
+          echo "imagemagick_version=$(cat ./imagemagick-version)" >> $GITHUB_OUTPUT
+          echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
+
+      - name: Download RPMs
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ matrix.nexus_classifier }}-rpm
+          path: rpms/tests/
+
+      - name: List RPMs
+        run: ls -R rpms/tests/*.rpm
+
+      - name: Prepare image
+        run: docker build . -t testenv --build-arg BASE_IMAGE=${{ matrix.base_image }}
+        working-directory: rpms/tests/
+
+      - name: Install & Test Packages
+        run: docker run --name buildtest testenv ${{ steps.variables.outputs.imagemagick_version }} ${{ matrix.target_arch }}
+      
+  deploy_rpms:
+    name: Deploy ${{ matrix.base_image }} for ${{ matrix.target_arch }}
+    runs-on: ubuntu-latest
+    needs:
+      - configure
+      - build_rpms
+      - test_rpms
+    strategy:
+      matrix: ${{ fromJson(needs.configure.outputs.matrix_test) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set build variables
+        id: variables
+        run: |
+          echo "imagemagick_version=$(cat ./imagemagick-version)" >> $GITHUB_OUTPUT
+          echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
+
+      - name: Download RPMs
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ matrix.nexus_classifier }}-rpm
+
+      - name: List RPMs
+        run: ls -R *.rpm
+
       - name: Deploy to nexus
         uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@9fd78f71c1ccbad03b79b81db541693cd9cfc89b
         if: startsWith(github.ref, 'refs/tags/v')
@@ -61,9 +130,9 @@ jobs:
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
           version: ${{ steps.variables.outputs.imagemagick_version }}-ci-${{ steps.variables.outputs.imagemagick_release }}
           generate-pom: false
-          file: RPMS/${{ matrix.target_arch }}/ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
+          file: ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
           classifier: ${{ matrix.nexus_classifier }}
-          files: RPMS/${{ matrix.target_arch }}/ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
+          files: ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
           classifiers: ${{ matrix.nexus_classifier }}-libs
           types: rpm
           maven-username: ${{ secrets.NEXUS_USERNAME }}
@@ -72,12 +141,11 @@ jobs:
   build_ubuntu:
     name: Build on ubuntu:${{ matrix.image_tag }} for x86_64
     runs-on: ubuntu-latest
+    needs:
+      - configure
     strategy:
-      matrix:
-        image_tag:
-          - 22.04
-          - 20.04
-          - 18.04
+      matrix: ${{ fromJson(needs.configure.outputs.matrix_debs) }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -106,6 +174,70 @@ jobs:
         with:
           name: ubuntu${{ matrix.image_tag }}-deb
           path: "*.deb"
+
+  test_ubuntu:
+    name: Test on ubuntu:${{ matrix.image_tag }} for x86_64
+    runs-on: ubuntu-latest
+    needs:
+      - configure
+      - build_ubuntu
+    strategy:
+      matrix: ${{ fromJson(needs.configure.outputs.matrix_debs) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set build variables
+        id: variables
+        run: |
+          echo "imagemagick_version=$(cat ./imagemagick-version)" >> $GITHUB_OUTPUT
+          echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
+
+      - name: Download DEBs
+        uses: actions/download-artifact@v3
+        with:
+          name: ubuntu${{ matrix.image_tag }}-deb
+          path: debs/tests/
+
+      - name: List Debs
+        run: ls -R debs/tests/*.deb
+
+      - name: Prepare test image
+        run: docker build . -t testenv --build-arg IMAGE_TAG=${{ matrix.image_tag }}
+        working-directory: debs/tests/
+
+      - name: Install & Test Packages
+        run: docker run --name buildtest testenv ${{ steps.variables.outputs.imagemagick_version }}
+
+  deploy_ubuntu:
+    name: Deploy on ubuntu:${{ matrix.image_tag }} for x86_64
+    runs-on: ubuntu-latest
+    needs:
+      - configure
+      - build_ubuntu
+      - test_ubuntu
+    strategy:
+      matrix: ${{ fromJson(needs.configure.outputs.matrix_debs) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set build variables
+        id: variables
+        run: |
+          echo "imagemagick_version=$(cat ./imagemagick-version)" >> $GITHUB_OUTPUT
+          echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
+
+      - name: Download DEBs
+        uses: actions/download-artifact@v3
+        with:
+          name: ubuntu${{ matrix.image_tag }}-deb
+
+      - name: List Debs
+        run: ls -R *.deb
+
       - name: Deploy to nexus
         uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@9fd78f71c1ccbad03b79b81db541693cd9cfc89b
         if: startsWith(github.ref, 'refs/tags/v')
@@ -115,9 +247,9 @@ jobs:
           repository-url: https://nexus.alfresco.com/nexus/content/repositories/thirdparty/
           version: ${{ steps.variables.outputs.imagemagick_version }}-ci-${{ steps.variables.outputs.imagemagick_release }}
           generate-pom: false
-          file: ${{ github.workspace }}/imagemagick-alfresco_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb
+          file: imagemagick-alfresco_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb
           classifier: ubuntu-${{ matrix.image_tag }}
-          files: ${{ github.workspace }}/imagemagick-alfresco-dev_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb
+          files: imagemagick-alfresco-dev_${{ steps.variables.outputs.imagemagick_version }}_amd64.deb
           classifiers: ubuntu-${{ matrix.image_tag }}-dev
           types: deb
           maven-username: ${{ secrets.NEXUS_USERNAME }}
