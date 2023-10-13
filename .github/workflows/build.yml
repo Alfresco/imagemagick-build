@@ -101,7 +101,7 @@ jobs:
       - build_rpms
       - test_rpms
     strategy:
-      matrix: ${{ fromJson(needs.configure.outputs.matrix_rpms) }}
+      matrix: ${{ fromJson(needs.configure.outputs.matrix_test) }}
 
     steps:
       - name: Checkout
