@@ -3,6 +3,7 @@
 This repo is building ImageMagick v7 deb/rpm packages for multiple distributions:
 
 * Centos 7 (x86_64 only)
+* RockyLinux 9 (x86_64 and aarch64)
 * RockyLinux 8 (x86_64 and aarch64)
 * Ubuntu 22.04 (x86_64 only)
 * Ubuntu 20.04 (x86_64 only)
