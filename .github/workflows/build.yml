@@ -5,6 +5,10 @@ on:
     paths-ignore:
       - README.md
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   configure:
     runs-on: ubuntu-latest
@@ -28,7 +32,8 @@ jobs:
       - configure
     strategy:
       matrix: ${{ fromJson(needs.configure.outputs.matrix_rpms) }}
-        
+      fail-fast: false
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -53,7 +58,7 @@ jobs:
           docker cp build:/root/rpmbuild/RPMS/ .
           ls -l RPMS/
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.nexus_classifier }}-rpm
           path: RPMS/${{ matrix.target_arch }}/*.rpm
@@ -66,6 +71,7 @@ jobs:
       - build_rpms
     strategy:
       matrix: ${{ fromJson(needs.configure.outputs.matrix_test) }}
+      fail-fast: false
 
     steps:
       - name: Checkout
@@ -78,7 +84,7 @@ jobs:
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
       - name: Download RPMs
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ matrix.nexus_classifier }}-rpm
           path: rpms/tests/
@@ -102,6 +108,8 @@ jobs:
       - test_rpms
     strategy:
       matrix: ${{ fromJson(needs.configure.outputs.matrix_test) }}
+      fail-fast: false
+      max-parallel: 1
 
     steps:
       - name: Checkout
@@ -114,7 +122,7 @@ jobs:
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
       - name: Download RPMs
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ matrix.nexus_classifier }}-rpm
 
@@ -145,6 +153,7 @@ jobs:
       - configure
     strategy:
       matrix: ${{ fromJson(needs.configure.outputs.matrix_debs) }}
+      fail-fast: false
 
     steps:
       - name: Checkout
@@ -170,7 +179,7 @@ jobs:
           docker cp build:/build/imagemagick-alfresco_${IMAGEMAGICK_VERSION}_amd64.deb .
           docker cp build:/build/imagemagick-alfresco-dev_${IMAGEMAGICK_VERSION}_amd64.deb .
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ubuntu${{ matrix.image_tag }}-deb
           path: "*.deb"
@@ -183,6 +192,7 @@ jobs:
       - build_ubuntu
     strategy:
       matrix: ${{ fromJson(needs.configure.outputs.matrix_debs) }}
+      fail-fast: false
 
     steps:
       - name: Checkout
@@ -195,7 +205,7 @@ jobs:
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
       - name: Download DEBs
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ubuntu${{ matrix.image_tag }}-deb
           path: debs/tests/
@@ -219,6 +229,8 @@ jobs:
       - test_ubuntu
     strategy:
       matrix: ${{ fromJson(needs.configure.outputs.matrix_debs) }}
+      fail-fast: false
+      max-parallel: 1
 
     steps:
       - name: Checkout
@@ -231,7 +243,7 @@ jobs:
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
       - name: Download DEBs
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ubuntu${{ matrix.image_tag }}-deb
 
