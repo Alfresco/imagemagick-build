@@ -25,6 +25,8 @@ git clone --depth 1 -b "$IMAGEMAGICK_VERSION" https://github.com/ImageMagick/Ima
 
 # Generate updated .src.rpm
 cd ImageMagick
+
+# Drop LQR support
 sed -i '/BuildRequires.*lqr/d; /--with-lqr/d' ImageMagick.spec.in
 sed -i '/%package lib/a AutoReq: no' ImageMagick.spec.in
 
