@@ -25,6 +25,7 @@ jobs:
          echo "matrix_rpms=$(jq -c . < ./rpms/config.json)" >> $GITHUB_OUTPUT
          echo "matrix_debs=$(jq -c . < ./debs/config.json)" >> $GITHUB_OUTPUT
          echo "matrix_test=$(jq -c 'del(.include[] | select(.target_arch == "aarch64"))' < rpms/config.json)" >> $GITHUB_OUTPUT
+
   build_rpms:
     name: Build on ${{ matrix.base_image }} for ${{ matrix.target_arch }}
     runs-on: ubuntu-latest
@@ -56,7 +57,7 @@ jobs:
           IMAGEMAGICK_VERSION: ${{ steps.variables.outputs.imagemagick_version }}
         run: |
           docker cp build:/root/rpmbuild/RPMS/ .
-          ls -l RPMS/
+          ls -l RPMS/${{ matrix.target_arch }}/
 
       - uses: actions/upload-artifact@v4
         with:
@@ -107,7 +108,7 @@ jobs:
       - build_rpms
       - test_rpms
     strategy:
-      matrix: ${{ fromJson(needs.configure.outputs.matrix_test) }}
+      matrix: ${{ fromJson(needs.configure.outputs.matrix_rpms) }}
       fail-fast: false
       max-parallel: 1
 
