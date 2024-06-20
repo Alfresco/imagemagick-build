@@ -277,7 +277,7 @@ jobs:
       - name: Download DEBs
         uses: actions/download-artifact@v4
         with:
-          name: ubuntu${{ matrix.image_tag }}-deb
+          name: ${{ matrix.nexus_classifier }}-deb
 
       - name: List Debs
         run: ls -R *.deb
