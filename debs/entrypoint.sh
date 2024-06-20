@@ -19,7 +19,7 @@ mv debian ImageMagick/
 
 cd ImageMagick
 
-AFTER_CHECKOUT_HOOK_SCRIPT="../after-checkout-${BASE_IMAGE//:/}-$IMAGEMAGICK_VERSION.sh"
+AFTER_CHECKOUT_HOOK_SCRIPT="../after-checkout-${BASE_IMAGE//[:.]/}-$IMAGEMAGICK_VERSION.sh"
 if [ -x "$AFTER_CHECKOUT_HOOK_SCRIPT" ]; then
     "$AFTER_CHECKOUT_HOOK_SCRIPT"
 fi
