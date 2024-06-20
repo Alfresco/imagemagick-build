@@ -1,7 +1,7 @@
 Source: imagemagick-alfresco
 Section: graphics
 Priority: optional
-Maintainer: Saurabh Lohe <saurabh.lohe@globallogic.com>
+Maintainer: Alfresco Ops Readiness <alfresco-build@hyland.com>
 Build-Depends: autotools-dev, ghostscript, gsfonts, libjbig-dev,
  libsm6, libfftw3-dev, liblcms2-dev, gawk, zlib1g-dev,
  libglib2.0-dev, libzip-dev, libfribidi-dev, mime-support,
