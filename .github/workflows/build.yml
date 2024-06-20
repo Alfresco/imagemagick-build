@@ -208,6 +208,9 @@ jobs:
       matrix: ${{ fromJson(needs.configure.outputs.matrix_debs) }}
       fail-fast: false
 
+    env:
+      PKG_ARCH: ${{ matrix.target_arch == 'aarch64' && 'arm64' || 'amd64' }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -244,7 +247,7 @@ jobs:
         working-directory: debs/tests/
 
       - name: Install & Test Packages
-        run: docker run --name buildtest testenv ${{ steps.variables.outputs.imagemagick_version }}
+        run: docker run --name buildtest testenv ${{ steps.variables.outputs.imagemagick_version }} ${{ env.PKG_ARCH }}
 
   deploy_ubuntu:
     name: Deploy on ubuntu:${{ matrix.image_tag }} for ${{ matrix.target_arch }}
