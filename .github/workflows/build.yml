@@ -147,7 +147,7 @@ jobs:
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
 
-  build_ubuntu:
+  build_deb:
     name: Build on ${{ matrix.base_image }} for ${{ matrix.target_arch }}
     runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-latest-arm64' || 'ubuntu-latest' }}
     needs:
@@ -198,12 +198,12 @@ jobs:
           name: ${{ matrix.nexus_classifier }}-deb
           path: "*.deb"
 
-  test_ubuntu:
+  test_deb:
     name: Test on ubuntu:${{ matrix.image_tag }} for ${{ matrix.target_arch }}
     runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-latest-arm64' || 'ubuntu-latest' }}
     needs:
       - configure
-      - build_ubuntu
+      - build_deb
     strategy:
       matrix: ${{ fromJson(needs.configure.outputs.matrix_debs) }}
       fail-fast: false
@@ -249,13 +249,13 @@ jobs:
       - name: Install & Test Packages
         run: docker run --name buildtest testenv ${{ steps.variables.outputs.imagemagick_version }} ${{ env.PKG_ARCH }}
 
-  deploy_ubuntu:
+  deploy_deb:
     name: Deploy on ubuntu:${{ matrix.image_tag }} for ${{ matrix.target_arch }}
     runs-on: ubuntu-latest
     needs:
       - configure
-      - build_ubuntu
-      - test_ubuntu
+      - build_deb
+      - test_deb
     strategy:
       matrix: ${{ fromJson(needs.configure.outputs.matrix_debs) }}
       fail-fast: false
