@@ -149,7 +149,7 @@ jobs:
 
   build_ubuntu:
     name: Build on ${{ matrix.base_image }} for ${{ matrix.target_arch }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-latest-arm64' || 'ubuntu-latest' }}
     needs:
       - configure
     strategy:

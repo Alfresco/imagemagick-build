@@ -11,13 +11,7 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
-if [ -z "$2" ]; then
-    echo "second argument must be provided: TARGET_ARCH"
-    exit 1
-fi
-
 IMAGEMAGICK_VERSION=$1
-TARGET_ARCH=$2
 
 git clone --depth 1 -b "$IMAGEMAGICK_VERSION" https://github.com/ImageMagick/ImageMagick.git
 
@@ -34,7 +28,7 @@ sed -i "1s/\${version}/$IMAGEMAGICK_VERSION/g" "debian/changelog" "debian/README
 
 mk-build-deps -Bi
 
-dpkg-buildpackage -b -uc --target-arch "${TARGET_ARCH}-linux"
+dpkg-buildpackage -b -uc
 
 echo "Imagemagick $IMAGEMAGICK_VERSION built successfully."
 ls -l ../*.deb
