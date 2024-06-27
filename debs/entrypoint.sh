@@ -1,25 +1,25 @@
 #!/bin/bash
 set -e -o pipefail -x
 
-if [ -z "$IMAGE_TAG" ]; then
-    echo "IMAGE_TAG env needs to be set"
+if [ -z "$BASE_IMAGE" ]; then
+    echo "BASE_IMAGE env needs to be set"
     exit 1
 fi
 
 if [ -z "$1" ]; then
-    echo "first argument needs to be set - IMAGEMAGICK_VERSION"
+    echo "first argument must be provided: IMAGEMAGICK_VERSION"
     exit 1
 fi
 
 IMAGEMAGICK_VERSION=$1
 
-git clone --depth 1 -b $IMAGEMAGICK_VERSION https://github.com/ImageMagick/ImageMagick.git
+git clone --depth 1 -b "$IMAGEMAGICK_VERSION" https://github.com/ImageMagick/ImageMagick.git
 
 mv debian ImageMagick/
 
 cd ImageMagick
 
-AFTER_CHECKOUT_HOOK_SCRIPT="../after-checkout-$IMAGE_TAG-$IMAGEMAGICK_VERSION.sh"
+AFTER_CHECKOUT_HOOK_SCRIPT="../after-checkout-${BASE_IMAGE//[:.]/}-$IMAGEMAGICK_VERSION.sh"
 if [ -x "$AFTER_CHECKOUT_HOOK_SCRIPT" ]; then
     "$AFTER_CHECKOUT_HOOK_SCRIPT"
 fi

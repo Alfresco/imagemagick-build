@@ -1,13 +1,34 @@
 {
     "include": [
-    {
-        "image_tag": "22.04"
-    },
-    {
-        "image_tag": "20.04"
-    },
-    {
-        "image_tag": "18.04"
-    }
+        {
+            "base_image": "ubuntu:22.04",
+            "target_arch": "x86_64",
+            "nexus_classifier": "ub2204-amd64"
+        },
+        {
+            "base_image": "ubuntu:22.04",
+            "target_arch": "aarch64",
+            "nexus_classifier": "ub2204-arm64"
+        },
+        {
+            "base_image": "ubuntu:20.04",
+            "target_arch": "x86_64",
+            "nexus_classifier": "ub2004-amd64"
+        },
+        {
+            "base_image": "ubuntu:20.04",
+            "target_arch": "aarch64",
+            "nexus_classifier": "ub2004-arm64"
+        },
+        {
+            "base_image": "ubuntu:18.04",
+            "target_arch": "x86_64",
+            "nexus_classifier": "ub1804-amd64"
+        },
+        {
+            "base_image": "ubuntu:18.04",
+            "target_arch": "aarch64",
+            "nexus_classifier": "ub1804-arm64"
+        }
     ]
 }

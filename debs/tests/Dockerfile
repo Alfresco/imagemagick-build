@@ -1,8 +1,9 @@
-ARG IMAGE_TAG
-FROM ubuntu:$IMAGE_TAG
+ARG BASE_IMAGE
 
-ARG IMAGE_TAG
-ENV IMAGE_TAG=$IMAGE_TAG
+FROM ${BASE_IMAGE}
+
+ARG BASE_IMAGE
+ENV BASE_IMAGE=${BASE_IMAGE}
 
 RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/99yes
 RUN apt-get update
