@@ -14,8 +14,8 @@ properly.
 
 Notes:
 
-ImageMagick packages built on RockyLinux 8 are tested also on and Redhat8 on the
-[Alfresco Ansible playbook](https://github.com/Alfresco/alfresco-ansible-deployment).
+ImageMagick packages built on RockyLinux are tested also on and Red Hat Enterprise on the
+[Alfresco Ansible playbook](https://github.com/Alfresco/alfresco-ansible-deployment) CI.
 
 Packages are published under our
 [Nexus](https://nexus.alfresco.com/nexus/#nexus-search;quick~imagemagick-distribution)
