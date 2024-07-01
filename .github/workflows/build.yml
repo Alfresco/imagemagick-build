@@ -150,7 +150,7 @@ jobs:
           file: ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
           classifier: ${{ matrix.nexus_classifier }}
           files: ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
-          classifiers: ${{ matrix.nexus_classifier }}-libs
+          classifiers: libs-${{ matrix.nexus_classifier }}
           types: rpm
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
