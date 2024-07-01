@@ -48,22 +48,11 @@ yum-builddep -y "ImageMagick-$IMAGEMAGICK_VERSION.src.rpm"
 rpmbuild --rebuild --nocheck --target "$TARGET_ARCH" "ImageMagick-$IMAGEMAGICK_VERSION.src.rpm"
 
 echo "Imagemagick $IMAGEMAGICK_VERSION for $TARGET_ARCH built successfully."
-ls  -lR /root/rpmbuild/RPMS
+ls  -lR /root/rpmbuild/RPMS/
 
-echo "Testing package expected dependencies"
-rpm -qp --requires /root/rpmbuild/RPMS/${TARGET_ARCH}/ImageMagick-libs-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm | grep -qEv 'libgs'
+cd "/root/rpmbuild/RPMS/$TARGET_ARCH"
 
-echo "Installing packages"
-yum install -y /root/rpmbuild/RPMS/${TARGET_ARCH}/ImageMagick-libs-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm
-yum install -y /root/rpmbuild/RPMS/${TARGET_ARCH}/ImageMagick-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm
+echo "Testing package unexpected dependencies"
+rpm -qp --requires ImageMagick-libs-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm | grep -qEv 'libgs'
 
-echo "Testing convert command"
-convert -version
-
-echo "Creating test image file"
-convert  -size 32x32 xc:transparent test.png
-
-echo "Converting png to jpg"
-convert test.png test1.jpg
-
-exit 0
+exec /tests.sh $IMAGEMAGICK_VERSION $TARGET_ARCH
