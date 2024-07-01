@@ -2,7 +2,6 @@
 
 This repo is building ImageMagick v7 deb/rpm packages for multiple distributions:
 
-* Centos 7 (x86_64 only)
 * RockyLinux 9 (x86_64 and aarch64)
 * RockyLinux 8 (x86_64 and aarch64)
 * Ubuntu 22.04 (x86_64 only)
@@ -15,9 +14,8 @@ properly.
 
 Notes:
 
-ImageMagick packages built on Centos 7 and RockyLinux 8 are tested also on
-Redhat7 and Redhat8 on the [Alfresco Ansible
-playbook](https://github.com/Alfresco/alfresco-ansible-deployment).
+ImageMagick packages built on RockyLinux are tested also on and Red Hat Enterprise on the
+[Alfresco Ansible playbook](https://github.com/Alfresco/alfresco-ansible-deployment) CI.
 
 Packages are published under our
 [Nexus](https://nexus.alfresco.com/nexus/#nexus-search;quick~imagemagick-distribution)
