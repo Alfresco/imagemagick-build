@@ -22,13 +22,19 @@ TARGET_ARCH=$2
 echo "Preparing to build Imagemagick $IMAGEMAGICK_VERSION for $TARGET_ARCH..."
 
 git clone --depth 1 -b "$IMAGEMAGICK_VERSION" https://github.com/ImageMagick/ImageMagick.git
-
-# Generate updated .src.rpm
 cd ImageMagick
 
 # Drop LQR support
 sed -i '/BuildRequires.*lqr/d; /--with-lqr/d' ImageMagick.spec.in
-sed -i '/%package lib/a AutoReq: no' ImageMagick.spec.in
+
+# Drop Raqm support
+sed -i '/BuildRequires.*raqm/d; s/--with-raqm/--without-raqm/' ImageMagick.spec.in
+
+# Drop ghostscript support
+sed -i '/BuildRequires.*ghostscript-devel/d; s/--with-gslib/--without-gslib/' ImageMagick.spec.in
+
+# Drop LibRaw support which is not compatible with the current version of ImageMagick
+sed -i '/BuildRequires.*LibRaw/d; /--with-raw/d' ImageMagick.spec.in
 
 AFTER_CHECKOUT_HOOK_SCRIPT="../after-checkout-${BASE_IMAGE//:/}-$IMAGEMAGICK_VERSION.sh"
 if [ -x "$AFTER_CHECKOUT_HOOK_SCRIPT" ]; then
@@ -45,27 +51,11 @@ yum-builddep -y "ImageMagick-$IMAGEMAGICK_VERSION.src.rpm"
 rpmbuild --rebuild --nocheck --target "$TARGET_ARCH" "ImageMagick-$IMAGEMAGICK_VERSION.src.rpm"
 
 echo "Imagemagick $IMAGEMAGICK_VERSION for $TARGET_ARCH built successfully."
-ls  -lR /root/rpmbuild/RPMS
+ls  -lR /root/rpmbuild/RPMS/
 
-if [ "$TARGET_ARCH" = "aarch64" ]; then
-    echo "Tests for this architecture are not available yet"
-    exit 0
-fi
+cd "/root/rpmbuild/RPMS/$TARGET_ARCH"
 
-echo "Testing package expected dependencies"
-rpm -qp --requires /root/rpmbuild/RPMS/${TARGET_ARCH}/ImageMagick-libs-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm | grep -qEv 'libcdt|libcgraph|libgvc|libgs|libMagickCore|libMagickWand'
+echo "Testing package for unexpected dependencies"
+rpm -qp --requires ImageMagick-libs-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm | grep -qEv 'libgs'
 
-echo "Installing packages"
-yum install -y /root/rpmbuild/RPMS/${TARGET_ARCH}/ImageMagick-libs-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm
-yum install -y /root/rpmbuild/RPMS/${TARGET_ARCH}/ImageMagick-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm
-
-echo "Testing convert command"
-convert -version
-
-echo "Creating test image file"
-convert  -size 32x32 xc:transparent test.png
-
-echo "Converting png to jpg"
-convert test.png test1.jpg
-
-exit 0
+exec /tests.sh $IMAGEMAGICK_VERSION $TARGET_ARCH

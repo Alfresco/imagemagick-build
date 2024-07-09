@@ -20,6 +20,7 @@ RUN if [ "$BASE_IMAGE" = "rockylinux:9" ]; then \
 
 WORKDIR /build
 COPY after-checkout-* /build/
+COPY tests/entrypoint.sh /tests.sh
 
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
