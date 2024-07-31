@@ -28,7 +28,7 @@ jobs:
 
   build_rpms:
     name: Build ${{ matrix.base_image }} ${{ matrix.target_arch }}
-    runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-latest-arm64' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-latest-arm64-small' || 'ubuntu-latest' }}
     needs:
       - configure
     strategy:
@@ -44,10 +44,6 @@ jobs:
         run: |
           echo "imagemagick_version=$(cat ./imagemagick-version)" >> $GITHUB_OUTPUT
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
-
-      - name: Setup Docker Engine
-        if: matrix.target_arch == 'aarch64'
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-docker@9558268b491821a4cfce1f11d4c8f6e56adc8496 # v5.30.0
 
       - name: Prepare image
         run: docker build . -t buildenv --build-arg BASE_IMAGE=${{ matrix.base_image }}
@@ -70,7 +66,7 @@ jobs:
 
   test_rpms:
     name: Test ${{ matrix.base_image }} ${{ matrix.target_arch }}
-    runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-latest-arm64' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-latest-arm64-small' || 'ubuntu-latest' }}
     needs:
       - configure
       - build_rpms
@@ -96,10 +92,6 @@ jobs:
 
       - name: List RPMs
         run: ls -R rpms/tests/*.rpm
-
-      - name: Setup Docker Engine
-        if: matrix.target_arch == 'aarch64'
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-docker@9558268b491821a4cfce1f11d4c8f6e56adc8496 # v5.30.0
 
       - name: Prepare image
         run: docker build . -t testenv --build-arg BASE_IMAGE=${{ matrix.base_image }}
@@ -157,7 +149,7 @@ jobs:
 
   build_deb:
     name: Build ${{ matrix.base_image }} ${{ matrix.target_arch }}
-    runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-latest-arm64' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-latest-arm64-small' || 'ubuntu-latest' }}
     needs:
       - configure
     strategy:
@@ -173,10 +165,6 @@ jobs:
         run: |
           echo "imagemagick_version=$(cat ./imagemagick-version)" >> $GITHUB_OUTPUT
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
-
-      - name: Setup Docker Engine
-        if: matrix.target_arch == 'aarch64'
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-docker@a288b9efdaa50413573b2e130896d906478b8e50 # v5.31.0
 
       - name: Prepare image
         run: docker build . -t buildenv --build-arg BASE_IMAGE=${{ matrix.base_image }}
@@ -200,7 +188,7 @@ jobs:
 
   test_deb:
     name: Test ${{ matrix.base_image }} ${{ matrix.target_arch }}
-    runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-latest-arm64' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-latest-arm64-small' || 'ubuntu-latest' }}
     needs:
       - configure
       - build_deb
@@ -220,10 +208,6 @@ jobs:
         run: |
           echo "imagemagick_version=$(cat ./imagemagick-version)" >> $GITHUB_OUTPUT
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
-
-      - name: Setup Docker Engine
-        if: matrix.target_arch == 'aarch64'
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-docker@a288b9efdaa50413573b2e130896d906478b8e50 # v5.31.0
 
       - name: Download DEBs
         uses: actions/download-artifact@v4
