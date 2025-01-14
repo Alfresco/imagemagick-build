@@ -31,8 +31,6 @@ override_dh_auto_configure:
 			--disable-docs \
 			--with-modules \
 			--with-quantum-depth=16 \
-			--with-gs-font-dir=/usr/share/fonts/type1/gsfonts \
-			--with-urw-base35-font-dir=/usr/share/fonts/type1/urw-base35 \
 			--with-magick-plus-plus \
 			--with-djvu \
 			--with-gslib \
