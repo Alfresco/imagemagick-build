@@ -2,7 +2,7 @@ Source: imagemagick-alfresco
 Section: graphics
 Priority: optional
 Maintainer: Alfresco Ops Readiness <alfresco-build@hyland.com>
-Build-Depends: autotools-dev, libjbig-dev,
+Build-Depends: autotools-dev, libjbig-dev, fonts-dejavu-core,
  libsm6, libfftw3-dev, liblcms2-dev, gawk, zlib1g-dev,
  libglib2.0-dev, libzip-dev, libfribidi-dev, mime-support,
  libxdmcp-dev, liblzma-dev, libjpeg-turbo8, libpng-dev,
@@ -17,7 +17,7 @@ Build-Depends: autotools-dev, libjbig-dev,
  file, libx11-dev, libgraphite2-dev, libxau-dev,
  libjbig0, libcairo2-dev,
  libexpat1-dev, liblqr-1-0-dev, libraw-dev, libbsd0,
- libopenexr-dev, libx11-6, libpango1.0-dev, libxau6, fonts-dejavu-mono
+ libopenexr-dev, libx11-6, libpango1.0-dev, libxau6
 Standards-Version: 4.4.1
 Homepage: https://imagemagick.org
 
