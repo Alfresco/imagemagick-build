@@ -1,6 +1,16 @@
 {
     "include": [
         {
+            "base_image": "ubuntu:24.04",
+            "target_arch": "x86_64",
+            "nexus_classifier": "ub2404-amd64"
+        },
+        {
+            "base_image": "ubuntu:24.04",
+            "target_arch": "aarch64",
+            "nexus_classifier": "ub2404-arm64"
+        },
+        {
             "base_image": "ubuntu:22.04",
             "target_arch": "x86_64",
             "nexus_classifier": "ub2204-amd64"
