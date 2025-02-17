@@ -129,7 +129,7 @@ jobs:
         run: ls -R *.rpm
 
       - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@16272633584df58ea603112c4aac4564c8673cd6
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@29e77d9158142e043783ea9eb831535b06474860
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           group-id: org.imagemagick
@@ -257,7 +257,7 @@ jobs:
         run: ls -R *.deb
 
       - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@16272633584df58ea603112c4aac4564c8673cd6
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@29e77d9158142e043783ea9eb831535b06474860
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           group-id: org.imagemagick
