@@ -26,7 +26,7 @@ jobs:
 
   build_rpms:
     name: Build ${{ matrix.base_image }} ${{ matrix.target_arch }}
-    runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-latest-arm64-small' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
     needs:
       - configure
     strategy:
@@ -64,7 +64,7 @@ jobs:
 
   test_rpms:
     name: Test ${{ matrix.base_image }} ${{ matrix.target_arch }}
-    runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-latest-arm64-small' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
     needs:
       - configure
       - build_rpms
@@ -147,7 +147,7 @@ jobs:
 
   build_deb:
     name: Build ${{ matrix.base_image }} ${{ matrix.target_arch }}
-    runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-latest-arm64-small' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
     needs:
       - configure
     strategy:
@@ -186,7 +186,7 @@ jobs:
 
   test_deb:
     name: Test ${{ matrix.base_image }} ${{ matrix.target_arch }}
-    runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-latest-arm64-small' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.target_arch == 'aarch64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
     needs:
       - configure
       - build_deb
