@@ -83,7 +83,7 @@ jobs:
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
       - name: Download RPMs
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: ${{ matrix.nexus_classifier }}-rpm
           path: rpms/tests/
@@ -121,7 +121,7 @@ jobs:
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
       - name: Download RPMs
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: ${{ matrix.nexus_classifier }}-rpm
 
@@ -208,7 +208,7 @@ jobs:
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
       - name: Download DEBs
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: ${{ matrix.nexus_classifier }}-deb
           path: debs/tests/
@@ -249,7 +249,7 @@ jobs:
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
       - name: Download DEBs
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: ${{ matrix.nexus_classifier }}-deb
 
