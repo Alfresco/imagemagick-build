@@ -7,7 +7,7 @@ RUN source /etc/os-release && \
     case "$VERSION_ID" in \
         8*) \
             # Enable RPM Fusion repos to get libheif
-            dnf install -y --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm && \
+            dnf install -y --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm \
             ;; \
         *) \
             echo "No overrides for OS version: $VERSION_ID" && exit 0 ;; \
