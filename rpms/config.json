@@ -1,22 +1,22 @@
 {
     "include": [
   {
-    "base_image": "rockylinux:9",
+    "base_image": "rockylinux/rockylinux:9",
     "target_arch": "x86_64",
     "nexus_classifier": "el9"
   },
   {
-    "base_image": "rockylinux:9",
+    "base_image": "rockylinux/rockylinux:9",
     "target_arch": "aarch64",
     "nexus_classifier": "el9-aarch64"
   },
   {
-    "base_image": "rockylinux:8",
+    "base_image": "rockylinux/rockylinux:8",
     "target_arch": "x86_64",
     "nexus_classifier": "el8"
   },
   {
-    "base_image": "rockylinux:8",
+    "base_image": "rockylinux/rockylinux:8",
     "target_arch": "aarch64",
     "nexus_classifier": "el8-aarch64"
   }
