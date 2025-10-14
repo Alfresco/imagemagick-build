@@ -15,6 +15,8 @@ RUN if [ "$BASE_IMAGE" = "rockylinux:9" ]; then \
         yum clean all; \
     else \
         yum-config-manager --enable powertools && \
+        # Enable RPM Fusion repos to get libheif
+        dnf install -y --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm && \
         yum clean all; \
     fi
 
