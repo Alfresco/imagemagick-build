@@ -1,8 +1,9 @@
-ARG BASE_IMAGE
+ARG BASE_IMAGE=rockylinux/rockylinux:9
 
 FROM ${BASE_IMAGE}
 
-RUN dnf install -y epel-release git make yum-utils rpm-build && \
+RUN dnf update -y && \
+    dnf install -y epel-release git make yum-utils rpm-build && \
     dnf group install -y "Development Tools" && \
     dnf clean all
 

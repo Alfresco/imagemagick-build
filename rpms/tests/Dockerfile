@@ -1,9 +1,10 @@
-ARG BASE_IMAGE
+ARG BASE_IMAGE=rockylinux/rockylinux:9
 
 FROM ${BASE_IMAGE}
 
-RUN yum install -y epel-release
-RUN source /etc/os-release && \
+RUN yum update -y && \
+    yum install -y epel-release && \
+    source /etc/os-release && \
     case "$VERSION_ID" in \
         8*) \
             # Enable RPM Fusion repos to get libheif
