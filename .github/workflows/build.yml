@@ -59,7 +59,7 @@ jobs:
           docker cp build:/root/rpmbuild/RPMS/ .
           ls -l RPMS/${{ matrix.target_arch }}/
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: ${{ matrix.nexus_classifier }}-rpm
           path: RPMS/${{ matrix.target_arch }}/*.rpm
@@ -181,7 +181,7 @@ jobs:
           docker cp build:/build/imagemagick-alfresco_${IMAGEMAGICK_VERSION}_${PKG_ARCH}.deb .
           docker cp build:/build/imagemagick-alfresco-dev_${IMAGEMAGICK_VERSION}_${PKG_ARCH}.deb .
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: ${{ matrix.nexus_classifier }}-deb
           path: "*.deb"
