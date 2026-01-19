@@ -10,8 +10,10 @@ ENV DEBCONF_NOWARNINGS=yes
 ENV LOGNAME=root
 
 RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/99yes
-RUN apt-get update && \
-    apt-get install build-essential git dpkg-dev devscripts equivs
+RUN <<EOF
+apt-get update
+apt-get install build-essential git dpkg-dev devscripts equivs
+EOF
 
 WORKDIR /build
 
