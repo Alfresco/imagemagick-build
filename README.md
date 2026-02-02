@@ -19,7 +19,7 @@ ImageMagick packages built on RockyLinux are tested also on and Red Hat Enterpri
 [Alfresco Ansible playbook](https://github.com/Alfresco/alfresco-ansible-deployment) CI.
 
 Packages are published under our
-[Nexus](https://nexus.alfresco.com/nexus/#nexus-search;quick~imagemagick-distribution)
+[Nexus](https://nexus.alfresco.com/nexus/#browse/search/maven/=attributes.maven2.artifactId%3Dimagemagick-distribution)
 instance.
 
 ## Release a new version
