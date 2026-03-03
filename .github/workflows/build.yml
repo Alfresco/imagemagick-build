@@ -59,7 +59,7 @@ jobs:
           docker cp build:/root/rpmbuild/RPMS/ .
           ls -l RPMS/${{ matrix.target_arch }}/
 
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: ${{ matrix.nexus_classifier }}-rpm
           path: RPMS/${{ matrix.target_arch }}/*.rpm
@@ -85,7 +85,7 @@ jobs:
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
       - name: Download RPMs
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: ${{ matrix.nexus_classifier }}-rpm
           path: rpms/tests/
@@ -123,7 +123,7 @@ jobs:
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
       - name: Download RPMs
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: ${{ matrix.nexus_classifier }}-rpm
 
@@ -131,7 +131,7 @@ jobs:
         run: ls -R *.rpm
 
       - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@1c7cd7fb5f8130b8ddc9d512ecb958c12fc18e89 # v12.10.2
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@92747a5b1a1ac64917ab7f3379d8879cb9415aed # v15.6.4
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           group-id: org.imagemagick
@@ -181,7 +181,7 @@ jobs:
           docker cp build:/build/imagemagick-alfresco_${IMAGEMAGICK_VERSION}_${PKG_ARCH}.deb .
           docker cp build:/build/imagemagick-alfresco-dev_${IMAGEMAGICK_VERSION}_${PKG_ARCH}.deb .
 
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: ${{ matrix.nexus_classifier }}-deb
           path: "*.deb"
@@ -210,7 +210,7 @@ jobs:
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
       - name: Download DEBs
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: ${{ matrix.nexus_classifier }}-deb
           path: debs/tests/
@@ -251,7 +251,7 @@ jobs:
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
       - name: Download DEBs
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: ${{ matrix.nexus_classifier }}-deb
 
@@ -259,7 +259,7 @@ jobs:
         run: ls -R *.deb
 
       - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@1c7cd7fb5f8130b8ddc9d512ecb958c12fc18e89 # v12.10.2
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@92747a5b1a1ac64917ab7f3379d8879cb9415aed # v15.6.4
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           group-id: org.imagemagick
