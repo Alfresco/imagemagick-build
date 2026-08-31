@@ -18,12 +18,14 @@ case "$VERSION_ID" in
     9*)
         dnf install -y dnf-plugins-core
         dnf config-manager --set-enabled crb
+        dnf install -y libde265-devel
         dnf clean packages
         ;;
     8*)
         yum-config-manager --enable powertools
-        # Enable RPM Fusion repos to get libheif
+        # Enable RPM Fusion repos to get libheif and libde265
         dnf install -y --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm
+        dnf install -y libde265-devel
         dnf clean packages
         ;;
     *)
