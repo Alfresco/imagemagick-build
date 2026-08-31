@@ -47,7 +47,7 @@ make dist-xz
 make srpm
 
 # Build it
-yum-builddep -y "ImageMagick-$IMAGEMAGICK_VERSION.src.rpm"
+yum-builddep -y --nobest "ImageMagick-$IMAGEMAGICK_VERSION.src.rpm"
 rpmbuild --rebuild --nocheck --target "$TARGET_ARCH" "ImageMagick-$IMAGEMAGICK_VERSION.src.rpm"
 
 echo "Imagemagick $IMAGEMAGICK_VERSION for $TARGET_ARCH built successfully."
