@@ -36,6 +36,10 @@ sed -i '/BuildRequires.*ghostscript-devel/d; s/--with-gslib/--without-gslib/' Im
 # Drop LibRaw support which is not compatible with the current version of ImageMagick
 sed -i '/BuildRequires.*LibRaw/d; /--with-raw/d' ImageMagick.spec.in
 
+# Add libheif-freeworld as runtime dependency for heic subpackage
+sed -i '/^%package heic/,/^%package / { /^%description heic/a Requires: libheif-freeworld
+}' ImageMagick.spec.in
+
 AFTER_CHECKOUT_HOOK_SCRIPT="../after-checkout-${BASE_IMAGE//:/}-$IMAGEMAGICK_VERSION.sh"
 if [ -x "$AFTER_CHECKOUT_HOOK_SCRIPT" ]; then
     "$AFTER_CHECKOUT_HOOK_SCRIPT"
