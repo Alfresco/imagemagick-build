@@ -20,14 +20,14 @@ case "$VERSION_ID" in
         dnf config-manager --set-enabled crb
         # Enable RPM Fusion repos for HEVC support
         dnf install -y --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm
-        dnf install -y libheif-devel
+        dnf install -y libheif-devel libheif-freeworld libde265-devel
         dnf clean packages
         ;;
     8*)
         yum-config-manager --enable powertools
         # Enable RPM Fusion repos for HEVC support
         dnf install -y --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm
-        dnf install -y libheif-devel libheif-freeworld
+        dnf install -y libheif-devel libheif-freeworld libde265-devel
         dnf clean packages
         ;;
     *)
