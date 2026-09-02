@@ -18,13 +18,16 @@ Build-Depends: autotools-dev, libjbig-dev,
  file, libx11-dev, libgraphite2-dev, libxau-dev,
  libjbig0, libcairo2-dev,
  libexpat1-dev, liblqr-1-0-dev, libraw-dev, libbsd0,
- libopenexr-dev, libx11-6, libpango1.0-dev, libxau6
+ libopenexr-dev, libx11-6, libpango1.0-dev, libxau6, libheif-dev
 Standards-Version: 4.4.1
 Homepage: https://imagemagick.org
 
 Package: imagemagick-alfresco
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+# Enable HEIC decode: libheif is linked automatically via ${shlibs:Depends}; the
+# libde265 HEVC backend is a libheif plugin on 24.04+ and a direct library on
+# older releases, so this OR-dependency covers every version.
+Depends: ${misc:Depends}, ${shlibs:Depends}, libheif-plugin-libde265 | libde265-0
 Description: ImageMagick 7 for Alfresco Transformation service
  This is the vanilla ImageMagick 7 software packaged for automated
  Alfresco deployments. All credit goes to ImageMagick Studio LLC, their
