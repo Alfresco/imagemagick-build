@@ -10,5 +10,8 @@ RUN apt-get update
 
 ADD *.deb /
 
+# Real HEIC file to decode in the test (a decode-only build can't create one).
+COPY sample.heic /sample.heic
+
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
