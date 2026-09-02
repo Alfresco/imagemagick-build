@@ -38,7 +38,7 @@ override_dh_auto_configure:
 			--with-magick-plus-plus \
 			--with-djvu \
 			--with-gslib \
-			--without-heic \
+			--with-heic \
 			--with-openjp2 \
 			--with-webp \
 			--with-wmf \
