@@ -39,7 +39,7 @@ Each format's `config.json` (`{base_image, target_arch, nexus_classifier}` list)
 
 ## CI workflow (`.github/workflows/build.yml`)
 
-Triggered on push (except changes to README/copilot-instructions/dependabot). Per format: `configure` (reads `config.json`) → `build_{rpms,deb}` (matrix, ARM jobs run on `ubuntu-24.04-arm`, x86_64 on `ubuntu-latest`) → `test_{rpms,deb}` → `deploy_{rpms,deb}` (tag-gated, `max-parallel: 1`). GitHub Actions are SHA-pinned.
+Triggered on push (except changes to README.md, AGENTS.md, CLAUDE.md, or .github/dependabot.yml). Per format: `configure` (reads `config.json`) → `build_{rpms,deb}` (matrix, ARM jobs run on `ubuntu-24.04-arm`, x86_64 on `ubuntu-latest`) → `test_{rpms,deb}` → `deploy_{rpms,deb}` (tag-gated, `max-parallel: 1`). GitHub Actions are SHA-pinned.
 
 ## Packaging install paths
 
