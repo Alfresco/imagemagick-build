@@ -45,12 +45,12 @@ if [[ "$VERSION_ID" == 8* || "$VERSION_ID" == 9* ]]; then
     # decoder can only be installed and exercised in a clean environment (the
     # dedicated test job / a real consumer such as ATS).
     if rpm -q libheif >/dev/null 2>&1 || rpm -q libheif-freeworld >/dev/null 2>&1; then
-        echo "libheif already present (build container) - skipping decode test"
+        echo "libheif already present (build container) - skipping HEIC test"
     else
         echo "Installing ImageMagick-heic and decoding a sample HEIC file"
         yum install -y "$HEIC_RPM"
         convert /sample.heic /tmp/heic-out.jpg
-        echo "HEIC decoded successfully: $(ls -l /tmp/heic-out.jpg)"
+        echo "HEIC tested successfully: $(ls -l /tmp/heic-out.jpg)"
     fi
 fi
 

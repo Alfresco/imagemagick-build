@@ -41,7 +41,7 @@ convert test.png test1.jpg
 # Decode a HEIC file to verify HEIC support. Skipped on 18.04 (EOL, libheif too old).
 source /etc/os-release
 if [ "$VERSION_ID" != "18.04" ]; then
-    echo "=== HEIC decode test ==="
+    echo "Converting heic to jpg"
     convert /sample.heic /tmp/heic-out.jpg
     echo "HEIC decoded successfully: $(ls -l /tmp/heic-out.jpg)"
 fi
