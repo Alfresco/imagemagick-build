@@ -4,7 +4,8 @@ on:
   push:
     paths-ignore:
       - README.md
-      - .github/copilot-instructions.md
+      - AGENTS.md
+      - CLAUDE.md
       - .github/dependabot.yml
 
 concurrency:
