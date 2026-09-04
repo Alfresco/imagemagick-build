@@ -7,7 +7,6 @@ This repo is building ImageMagick v7 deb/rpm packages for multiple distributions
 * Ubuntu 24.04 (x86_64 and aarch64)
 * Ubuntu 22.04 (x86_64 and aarch64)
 * Ubuntu 20.04 (x86_64 and aarch64)
-* Ubuntu 18.04 (x86_64 and aarch64)
 
 that are required by
 [Alfresco](https://docs.alfresco.com/content-services/latest/support/) to work
