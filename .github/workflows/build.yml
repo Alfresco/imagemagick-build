@@ -20,7 +20,7 @@ jobs:
       matrix_debs: ${{ steps.set-matrix.outputs.matrix_debs }}
     steps:
      - name: Checkout to repository
-       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
      - name: Set matrix data
        id: set-matrix
        run: |
@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set build variables
         id: variables
@@ -60,7 +60,7 @@ jobs:
           docker cp build:/root/rpmbuild/RPMS/ .
           ls -l RPMS/${{ matrix.target_arch }}/
 
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{ matrix.nexus_classifier }}-rpm
           path: RPMS/${{ matrix.target_arch }}/*.rpm
@@ -77,7 +77,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set build variables
         id: variables
@@ -86,7 +86,7 @@ jobs:
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
       - name: Download RPMs
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ${{ matrix.nexus_classifier }}-rpm
           path: rpms/tests/
@@ -115,7 +115,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set build variables
         id: variables
@@ -124,7 +124,7 @@ jobs:
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
       - name: Download RPMs
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ${{ matrix.nexus_classifier }}-rpm
 
@@ -132,7 +132,7 @@ jobs:
         run: ls -R *.rpm
 
       - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@1c7cd7fb5f8130b8ddc9d512ecb958c12fc18e89 # v12.10.2
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@567a9393acca033008ce34eafcb200469e4ea2f5 # v18.27.0
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           group-id: org.imagemagick
@@ -159,7 +159,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set build variables
         id: variables
@@ -182,7 +182,7 @@ jobs:
           docker cp build:/build/imagemagick-alfresco_${IMAGEMAGICK_VERSION}_${PKG_ARCH}.deb .
           docker cp build:/build/imagemagick-alfresco-dev_${IMAGEMAGICK_VERSION}_${PKG_ARCH}.deb .
 
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{ matrix.nexus_classifier }}-deb
           path: "*.deb"
@@ -202,7 +202,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set build variables
         id: variables
@@ -211,7 +211,7 @@ jobs:
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
       - name: Download DEBs
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ${{ matrix.nexus_classifier }}-deb
           path: debs/tests/
@@ -243,7 +243,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set build variables
         id: variables
@@ -252,7 +252,7 @@ jobs:
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
 
       - name: Download DEBs
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ${{ matrix.nexus_classifier }}-deb
 
@@ -260,7 +260,7 @@ jobs:
         run: ls -R *.deb
 
       - name: Deploy to nexus
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@1c7cd7fb5f8130b8ddc9d512ecb958c12fc18e89 # v12.10.2
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-deploy-file@567a9393acca033008ce34eafcb200469e4ea2f5 # v18.27.0
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           group-id: org.imagemagick
