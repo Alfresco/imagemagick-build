@@ -18,6 +18,9 @@ EOF
 
 ADD *.rpm /
 
+# Real HEIC file to decode in the test (a decode-only build can't create one).
+COPY sample.heic /sample.heic
+
 ARG BASE_IMAGE
 ENV BASE_IMAGE=${BASE_IMAGE}
 

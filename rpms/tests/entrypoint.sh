@@ -35,4 +35,23 @@ convert  -size 32x32 xc:transparent test.png
 echo "Converting png to jpg"
 convert test.png test1.jpg
 
+source /etc/os-release
+if [[ "$VERSION_ID" == 8* || "$VERSION_ID" == 9* ]]; then
+    echo "=== HEIC decode test ==="
+    HEIC_RPM=ImageMagick-heic-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm
+
+    # The build container already has the libheif package (needed to compile),
+    # whose files conflict with the ones bundled into ImageMagick-heic, so the
+    # decoder can only be installed and exercised in a clean environment (the
+    # dedicated test job / a real consumer such as ATS).
+    if rpm -q libheif >/dev/null 2>&1 || rpm -q libheif-freeworld >/dev/null 2>&1; then
+        echo "libheif already present (build container) - skipping HEIC test"
+    else
+        echo "Installing ImageMagick-heic and decoding a sample HEIC file"
+        yum install -y "$HEIC_RPM"
+        convert /sample.heic /tmp/heic-out.jpg
+        echo "HEIC tested successfully: $(ls -l /tmp/heic-out.jpg)"
+    fi
+fi
+
 exit 0

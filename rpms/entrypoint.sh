@@ -36,6 +36,9 @@ sed -i '/BuildRequires.*ghostscript-devel/d; s/--with-gslib/--without-gslib/' Im
 # Drop LibRaw support which is not compatible with the current version of ImageMagick
 sed -i '/BuildRequires.*LibRaw/d; /--with-raw/d' ImageMagick.spec.in
 
+# Bundle the HEVC decoder into the ImageMagick-heic RPM (see script for details).
+/bundle-heic-decoder.sh
+
 AFTER_CHECKOUT_HOOK_SCRIPT="../after-checkout-${BASE_IMAGE//:/}-$IMAGEMAGICK_VERSION.sh"
 if [ -x "$AFTER_CHECKOUT_HOOK_SCRIPT" ]; then
     "$AFTER_CHECKOUT_HOOK_SCRIPT"
