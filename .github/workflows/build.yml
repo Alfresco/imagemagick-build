@@ -142,9 +142,9 @@ jobs:
           generate-pom: false
           file: ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
           classifier: ${{ matrix.nexus_classifier }}
-          files: ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
-          classifiers: libs-${{ matrix.nexus_classifier }}
-          types: rpm
+          files: ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm,ImageMagick-heic-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
+          classifiers: libs-${{ matrix.nexus_classifier }},heic-${{ matrix.nexus_classifier }}
+          types: rpm,rpm
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
 
