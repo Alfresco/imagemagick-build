@@ -20,7 +20,7 @@ case "$VERSION_ID" in
         dnf config-manager --set-enabled crb
         # Build-time libheif/libde265 for the HEIC decoder (from EPEL + RPM Fusion). entrypoint.sh bundles them into the RPM
         dnf install -y --nogpgcheck "https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm"
-        dnf install -y libheif-devel libheif-freeworld libde265-freeworld
+        dnf install -y libheif-devel libheif-freeworld libde265
         dnf clean packages
         ;;
     8*)
@@ -28,7 +28,7 @@ case "$VERSION_ID" in
         # Enable RPM Fusion repos to get libheif
         # Build-time libheif/libde265 for the HEIC decoder (from EPEL + RPM Fusion). entrypoint.sh bundles them into the RPM
         dnf install -y --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm
-        dnf install -y libheif-devel libde265-freeworld
+        dnf install -y libheif-devel libde265
         dnf clean packages
         ;;
     *)
