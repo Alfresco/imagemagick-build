@@ -39,6 +39,7 @@ EOF
 WORKDIR /build
 COPY after-checkout-* /build/
 COPY tests/entrypoint.sh /tests.sh
+COPY tests/sample.heic /sample.heic
 COPY bundle-heic-decoder.sh /bundle-heic-decoder.sh
 
 COPY entrypoint.sh /entrypoint.sh
