@@ -35,12 +35,17 @@ convert  -size 32x32 xc:transparent test.png
 echo "Converting png to jpg"
 convert test.png test1.jpg
 
-echo "=== HEIC decode test ==="
-HEIC_RPM=ImageMagick-heic-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm
+source /etc/os-release
+if [[ "$VERSION_ID" == 9* ]]; then
+    echo "=== HEIC decode test ==="
+    HEIC_RPM=ImageMagick-heic-$IMAGEMAGICK_VERSION.$TARGET_ARCH.rpm
 
-echo "Installing ImageMagick-heic and decoding a sample HEIC file"
-yum install -y "$HEIC_RPM"
-convert /sample.heic /tmp/heic-out.jpg
-echo "HEIC tested successfully: $(ls -l /tmp/heic-out.jpg)"
+    echo "Installing ImageMagick-heic and decoding a sample HEIC file"
+    yum install -y "$HEIC_RPM"
+    convert /sample.heic /tmp/heic-out.jpg
+    echo "HEIC tested successfully: $(ls -l /tmp/heic-out.jpg)"
+else
+    echo "No ImageMagick-heic package on el$VERSION_ID - skipping HEIC decode test"
+fi
 
 exit 0
