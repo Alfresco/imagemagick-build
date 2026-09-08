@@ -122,6 +122,16 @@ jobs:
         run: |
           echo "imagemagick_version=$(cat ./imagemagick-version)" >> $GITHUB_OUTPUT
           echo "imagemagick_release=$(cat ./release-version)" >> $GITHUB_OUTPUT
+          # ImageMagick-heic is only built on el9 (see rpms/bundle-heic-decoder.sh).
+          if [[ "${{ matrix.nexus_classifier }}" == el9* ]]; then
+            echo "extra_files=ImageMagick-libs-$(cat ./imagemagick-version).${{ matrix.target_arch }}.rpm,ImageMagick-heic-$(cat ./imagemagick-version).${{ matrix.target_arch }}.rpm" >> $GITHUB_OUTPUT
+            echo "extra_classifiers=libs-${{ matrix.nexus_classifier }},heic-${{ matrix.nexus_classifier }}" >> $GITHUB_OUTPUT
+            echo "extra_types=rpm,rpm" >> $GITHUB_OUTPUT
+          else
+            echo "extra_files=ImageMagick-libs-$(cat ./imagemagick-version).${{ matrix.target_arch }}.rpm" >> $GITHUB_OUTPUT
+            echo "extra_classifiers=libs-${{ matrix.nexus_classifier }}" >> $GITHUB_OUTPUT
+            echo "extra_types=rpm" >> $GITHUB_OUTPUT
+          fi
 
       - name: Download RPMs
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
@@ -142,9 +152,9 @@ jobs:
           generate-pom: false
           file: ImageMagick-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
           classifier: ${{ matrix.nexus_classifier }}
-          files: ImageMagick-libs-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm,ImageMagick-heic-${{ steps.variables.outputs.imagemagick_version }}.${{ matrix.target_arch }}.rpm
-          classifiers: libs-${{ matrix.nexus_classifier }},heic-${{ matrix.nexus_classifier }}
-          types: rpm,rpm
+          files: ${{ steps.variables.outputs.extra_files }}
+          classifiers: ${{ steps.variables.outputs.extra_classifiers }}
+          types: ${{ steps.variables.outputs.extra_types }}
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
 

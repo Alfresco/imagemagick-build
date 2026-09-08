@@ -25,10 +25,6 @@ case "$VERSION_ID" in
         ;;
     8*)
         yum-config-manager --enable powertools
-        # Enable RPM Fusion repos to get libheif
-        # Build-time libheif/libde265 for the HEIC decoder (from EPEL + RPM Fusion). entrypoint.sh bundles them into the RPM
-        dnf install -y --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm
-        dnf install -y libheif-devel libde265
         dnf clean packages
         ;;
     *)
