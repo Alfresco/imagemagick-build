@@ -7,7 +7,7 @@ This file provides guidance to AI coding agents (Claude Code, GitHub Copilot, et
 This repo builds ImageMagick v7 `.deb`/`.rpm` packages required by Alfresco Content Services, for:
 
 - RockyLinux 9 and 8 (x86_64 and aarch64) → RPMs
-- Ubuntu 24.04, 22.04, 20.04 (x86_64 and aarch64) → DEBs
+- Ubuntu 24.04 and 22.04 (x86_64 and aarch64) → DEBs
 
 Packages are published to Alfresco's Nexus (`org.imagemagick:imagemagick-distribution`).
 
