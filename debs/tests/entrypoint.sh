@@ -38,4 +38,8 @@ convert  -size 32x32 xc:transparent test.png
 echo "Converting png to jpg"
 convert test.png test1.jpg
 
+echo "Converting heic to jpg"
+convert /sample.heic /tmp/heic-out.jpg
+echo "HEIC decoded successfully: $(ls -l /tmp/heic-out.jpg)"
+
 exit 0

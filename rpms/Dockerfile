@@ -18,12 +18,17 @@ case "$VERSION_ID" in
     9*)
         dnf install -y dnf-plugins-core
         dnf config-manager --set-enabled crb
+        # Build-time libheif/libde265 for the HEIC decoder (from EPEL + RPM Fusion). entrypoint.sh bundles them into the RPM
+        dnf install -y --nogpgcheck "https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm"
+        dnf install -y libheif-devel libheif-freeworld libde265
         dnf clean packages
         ;;
     8*)
         yum-config-manager --enable powertools
         # Enable RPM Fusion repos to get libheif
+        # Build-time libheif/libde265 for the HEIC decoder (from EPEL + RPM Fusion). entrypoint.sh bundles them into the RPM
         dnf install -y --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm
+        dnf install -y libheif-devel libde265
         dnf clean packages
         ;;
     *)
@@ -34,6 +39,8 @@ EOF
 WORKDIR /build
 COPY after-checkout-* /build/
 COPY tests/entrypoint.sh /tests.sh
+COPY tests/sample.heic /sample.heic
+COPY bundle-heic-decoder.sh /bundle-heic-decoder.sh
 
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
