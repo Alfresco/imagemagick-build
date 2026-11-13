@@ -31,7 +31,7 @@ sources:
       url: https://github.com/ImageMagick/ImageMagick.git
       versionfilter:
         kind: regex/semver
-        regex: '^7\.\d+\.\d+-\d+$'
+        regex: '^(7\.\d+\.\d+-\d+)$'
         pattern: '>=0.0.0-0'
 
 targets:
