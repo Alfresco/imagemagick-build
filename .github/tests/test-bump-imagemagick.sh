@@ -1,7 +1,5 @@
 #!/bin/bash -e
 # Tests for bump-imagemagick.sh in a throwaway copy of the repo layout.
-#
-#   ./.github/tests/test-bump-imagemagick.sh
 set -o pipefail
 
 BASE_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
@@ -10,13 +8,14 @@ WORK_DIR=$(mktemp -d)
 trap 'rm -rf "$WORK_DIR"' EXIT
 FAILURES=0
 
-assert_ok() {
-  local desc="$1"
-  shift
-  if "$@"; then
+assert_eq() {
+  local desc="$1" expected="$2" actual="$3"
+  if [ "$expected" = "$actual" ]; then
     echo "ok - $desc"
   else
     echo "FAIL - $desc"
+    echo "  expected: $expected"
+    echo "  actual:   $actual"
     FAILURES=$((FAILURES + 1))
   fi
 }
@@ -35,29 +34,29 @@ new_root() {
 
 ROOT=$(new_root)
 OUT=$("$BUMP" 7.1.2-35 "$ROOT")
-assert_ok "the version file holds the new version" test "$(cat "$ROOT/imagemagick-version")" = "7.1.2-35"
-assert_ok "the release version resets to 1" test "$(cat "$ROOT/release-version")" = "1"
-assert_ok "a deb override of the old version is copied for the new one" \
-  test "$(cat "$ROOT/debs/after-checkout-ubuntu2404-7.1.2-35.sh")" = "patch 31"
-assert_ok "an rpm override of the old version is copied for the new one" \
-  test "$(cat "$ROOT/rpms/after-checkout-rockylinux8-7.1.2-35.sh")" = "rpm patch 31"
-assert_ok "only the override of the old version is carried over, not those of older ones" \
-  test "$(ls "$ROOT/debs" | grep -c -- '-7.1.2-35.sh$')" = "1"
-assert_ok "the old override stays in place" test -f "$ROOT/debs/after-checkout-ubuntu2404-7.1.2-31.sh"
-assert_ok "the command reports the bump" test "$OUT" = "7.1.2-31 -> 7.1.2-35"
+assert_eq "the version file holds the new version" "7.1.2-35" "$(cat "$ROOT/imagemagick-version")"
+assert_eq "the release version resets to 1" "1" "$(cat "$ROOT/release-version")"
+assert_eq "a deb override of the old version is copied for the new one" \
+  "patch 31" "$(cat "$ROOT/debs/after-checkout-ubuntu2404-7.1.2-35.sh")"
+assert_eq "an rpm override of the old version is copied for the new one" \
+  "rpm patch 31" "$(cat "$ROOT/rpms/after-checkout-rockylinux8-7.1.2-35.sh")"
+assert_eq "only the override of the old version is carried over, not those of older ones" \
+  "1" "$(ls "$ROOT/debs" | grep -c -- '-7.1.2-35.sh$')"
+assert_eq "the old override stays in place" "patch 31" "$(cat "$ROOT/debs/after-checkout-ubuntu2404-7.1.2-31.sh")"
+assert_eq "the command reports the bump" "7.1.2-31 -> 7.1.2-35" "$OUT"
 
 ROOT=$(new_root)
 OUT=$("$BUMP" 7.1.2-31 "$ROOT")
-assert_ok "the release version is kept when the version does not change" test "$(cat "$ROOT/release-version")" = "3"
-assert_ok "nothing is copied when the version does not change" \
-  test "$(ls "$ROOT/debs" | wc -l | tr -d ' ')" = "2"
-assert_ok "the command prints nothing when the version does not change" test -z "$OUT"
+assert_eq "the release version is kept when the version does not change" "3" "$(cat "$ROOT/release-version")"
+assert_eq "nothing is copied when the version does not change" \
+  "2" "$(ls "$ROOT/debs" | wc -l | tr -d ' ')"
+assert_eq "the command prints nothing when the version does not change" "" "$OUT"
 
 ROOT=$(new_root)
 echo "hand-edited" > "$ROOT/debs/after-checkout-ubuntu2404-7.1.2-35.sh"
 "$BUMP" 7.1.2-35 "$ROOT" > /dev/null
-assert_ok "an existing override of the new version is not overwritten" \
-  test "$(cat "$ROOT/debs/after-checkout-ubuntu2404-7.1.2-35.sh")" = "hand-edited"
+assert_eq "an existing override of the new version is not overwritten" \
+  "hand-edited" "$(cat "$ROOT/debs/after-checkout-ubuntu2404-7.1.2-35.sh")"
 
 if [ "$FAILURES" -gt 0 ]; then
   echo "$FAILURES test(s) failed"

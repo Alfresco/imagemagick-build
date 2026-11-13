@@ -5,17 +5,16 @@
 def vkey: [scan("\\d+") | tonumber];
 
 def patched:
-  [ .vulnerabilities[]?.patched_versions // empty
-    | split(",")[]
-    | gsub("^\\s+|\\s+$"; "")
-    | select(startswith("7.")) ];
+  .vulnerabilities[]?.patched_versions // empty
+  | split(",")[]
+  | trim
+  | select(startswith("7."));
 
 ($old | vkey) as $from
 | ($new | vkey) as $to
 | [ .[]
     | select(.state == "published" and .withdrawn_at == null)
-    | ([patched[] | select((vkey) > $from and (vkey) <= $to)] | first) as $fixed
-    | select($fixed != null)
+    | first(patched | select(vkey | . > $from and . <= $to)) as $fixed
     | {ghsa: .ghsa_id, url: .html_url, cve: (.cve_id // "-"), sev: .severity,
        summary: (.summary | gsub("\\|"; "\\|") | gsub("\\s+"; " ")), fixed: $fixed} ]
 | sort_by(.fixed | vkey)

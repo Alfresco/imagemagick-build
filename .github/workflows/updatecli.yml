@@ -30,6 +30,9 @@ jobs:
   updatecli:
     runs-on: ubuntu-latest
     if: github.actor != 'dependabot[bot]'
+    env:
+      TOKEN_ACCESS: ${{ github.event_name == 'pull_request' && 'read' || 'write' }}
+      UPDATECLI_MODE: ${{ github.event_name == 'pull_request' && 'diff' || 'apply' }}
     steps:
       - name: Generate app token
         id: app-token
@@ -37,8 +40,8 @@ jobs:
         with:
           client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
-          permission-contents: ${{ github.event_name == 'pull_request' && 'read' || 'write' }}
-          permission-pull-requests: ${{ github.event_name == 'pull_request' && 'read' || 'write' }}
+          permission-contents: ${{ env.TOKEN_ACCESS }}
+          permission-pull-requests: ${{ env.TOKEN_ACCESS }}
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -51,7 +54,6 @@ jobs:
           UPDATECLI_GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           UPDATECLI_GITHUB_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
           UPDATECLI_GITHUB_EMAIL: ${{ vars.BOT_GITHUB_EMAIL }}
-          UPDATECLI_MODE: ${{ github.event_name == 'pull_request' && 'diff' || 'apply' }}
 
   advisories:
     runs-on: ubuntu-latest
@@ -67,6 +69,7 @@ jobs:
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           GH_TOKEN: ${{ github.token }}
+          MARKER: "<!-- imagemagick-advisories -->"
           MAX_ROWS: "150"
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
@@ -81,7 +84,7 @@ jobs:
           COUNT=$(printf '%s' "$ROWS" | grep -c . || true)
 
           {
-            echo "<!-- imagemagick-advisories -->"
+            echo "$MARKER"
             echo "### ImageMagick $OLD -> $NEW"
             echo
             if [ "$COUNT" -gt 0 ]; then
@@ -100,7 +103,7 @@ jobs:
           } > body.md
 
           COMMENT_ID=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" --paginate \
-            --jq '.[] | select(.body | startswith("<!-- imagemagick-advisories -->")) | .id' | head -n 1)
+            --jq '.[] | select(.body | startswith(env.MARKER)) | .id' | head -n 1)
           if [ -n "$COMMENT_ID" ]; then
             gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$COMMENT_ID" -F body=@body.md > /dev/null
           else

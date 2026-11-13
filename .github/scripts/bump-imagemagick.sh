@@ -12,7 +12,7 @@ OLD=$(tr -d '[:space:]' < "$ROOT/imagemagick-version")
 printf '%s\n' "$NEW" >| "$ROOT/imagemagick-version"
 printf '1\n' >| "$ROOT/release-version"
 
-for override in "$ROOT"/debs/after-checkout-*-"$OLD".sh "$ROOT"/rpms/after-checkout-*-"$OLD".sh; do
+for override in "$ROOT"/{debs,rpms}/after-checkout-*-"$OLD".sh; do
   [ -f "$override" ] || continue
   target="${override%-"$OLD".sh}-$NEW.sh"
   [ -e "$target" ] || cp -p "$override" "$target"
