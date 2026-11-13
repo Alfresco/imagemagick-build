@@ -31,6 +31,15 @@ jobs:
     runs-on: ubuntu-latest
     if: github.actor != 'dependabot[bot]'
     steps:
+      - name: Generate app token
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install Updatecli
@@ -39,7 +48,7 @@ jobs:
       - name: Run Updatecli in ${{ env.UPDATECLI_MODE }} mode
         run: updatecli pipeline ${{ env.UPDATECLI_MODE }}
         env:
-          UPDATECLI_GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+          UPDATECLI_GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           UPDATECLI_GITHUB_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
           UPDATECLI_GITHUB_EMAIL: ${{ vars.BOT_GITHUB_EMAIL }}
           UPDATECLI_MODE: ${{ github.event_name == 'pull_request' && 'diff' || 'apply' }}
