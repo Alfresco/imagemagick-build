@@ -39,13 +39,13 @@ Each format's `config.json` (`{base_image, target_arch, nexus_classifier}` list)
 
 ## CI workflow (`.github/workflows/build.yml`)
 
-Triggered on push (except changes to README.md, AGENTS.md, CLAUDE.md, .github/dependabot.yml, or the updatecli and advisory files: `updatecli.d/`, `.github/scripts/`, `.github/workflows/updatecli.yml`, `.github/workflows/bump-advisories.yml`). Per format: `configure` (reads `config.json`) → `build_{rpms,deb}` (matrix, ARM jobs run on `ubuntu-24.04-arm`, x86_64 on `ubuntu-latest`) → `test_{rpms,deb}` → `deploy_{rpms,deb}` (tag-gated, `max-parallel: 1`). GitHub Actions are SHA-pinned.
+Triggered on push (except changes to README.md, AGENTS.md, CLAUDE.md, .github/dependabot.yml, or the updatecli files: `updatecli.d/`, `.github/scripts/`, `.github/tests/`, `.github/workflows/updatecli.yml`). Per format: `configure` (reads `config.json`) → `build_{rpms,deb}` (matrix, ARM jobs run on `ubuntu-24.04-arm`, x86_64 on `ubuntu-latest`) → `test_{rpms,deb}` → `deploy_{rpms,deb}` (tag-gated, `max-parallel: 1`). GitHub Actions are SHA-pinned.
 
 ## Automated bumps
 
 - `.github/workflows/updatecli.yml` runs [`updatecli.d/imagemagick.yml`](updatecli.d/imagemagick.yml) every Monday. It opens a draft PR when ImageMagick publishes a newer 7.x tag. `.github/scripts/bump-imagemagick.sh` does the file changes: it writes `imagemagick-version`, resets `release-version` to `1`, and copies the `after-checkout-*-{old version}.sh` overrides to the new version name (the entrypoints only look for an override named after the version they build). CI on that PR shows whether the copied overrides still apply.
-- `.github/workflows/bump-advisories.yml` runs on any PR that changes `imagemagick-version`. It posts one comment listing the ImageMagick security advisories fixed between the old and new version, and adds the `security` label when there are any. The filter is `.github/scripts/fixed-advisories.jq`.
-- Both scripts have tests next to them (`.github/scripts/test-*.sh`), run by `updatecli.yml` on PRs.
+- The `advisories` job of the same workflow runs on any PR that changes `imagemagick-version`. It posts one comment listing the ImageMagick security advisories fixed between the old and new version, and adds the `security` label when there are any. The filter is `.github/scripts/fixed-advisories.jq`.
+- Both scripts have tests in `.github/tests/`, run by the `test_scripts` job of `updatecli.yml` on PRs.
 
 ## Packaging install paths
 

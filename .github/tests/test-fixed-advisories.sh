@@ -1,11 +1,11 @@
 #!/bin/bash -e
 # Tests for fixed-advisories.jq against a small advisory fixture, no network needed.
 #
-#   ./.github/scripts/test-fixed-advisories.sh
+#   ./.github/tests/test-fixed-advisories.sh
 set -o pipefail
 
 BASE_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
-FILTER="$BASE_DIR/fixed-advisories.jq"
+FILTER="$BASE_DIR/../scripts/fixed-advisories.jq"
 FIXTURE="$BASE_DIR/fixtures/advisories.json"
 FAILURES=0
 

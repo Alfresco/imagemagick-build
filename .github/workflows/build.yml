@@ -8,8 +8,8 @@ on:
       - CLAUDE.md
       - .github/dependabot.yml
       - .github/scripts/**
+      - .github/tests/**
       - .github/workflows/updatecli.yml
-      - .github/workflows/bump-advisories.yml
       - updatecli.d/**
 
 concurrency:

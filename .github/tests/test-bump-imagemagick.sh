@@ -1,11 +1,11 @@
 #!/bin/bash -e
 # Tests for bump-imagemagick.sh in a throwaway copy of the repo layout.
 #
-#   ./.github/scripts/test-bump-imagemagick.sh
+#   ./.github/tests/test-bump-imagemagick.sh
 set -o pipefail
 
 BASE_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
-BUMP="$BASE_DIR/bump-imagemagick.sh"
+BUMP="$BASE_DIR/../scripts/bump-imagemagick.sh"
 WORK_DIR=$(mktemp -d)
 trap 'rm -rf "$WORK_DIR"' EXIT
 FAILURES=0
