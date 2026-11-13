@@ -1,0 +1,43 @@
+---
+name: Bump ImageMagick version
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * MON"
+  pull_request:
+    paths:
+      - ".github/workflows/updatecli.yml"
+      - ".github/scripts/**"
+      - "updatecli.d/**"
+
+permissions:
+  contents: read
+
+jobs:
+  test_scripts:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Test the advisory filter
+        run: .github/scripts/test-fixed-advisories.sh
+      - name: Test the version bump script
+        run: .github/scripts/test-bump-imagemagick.sh
+
+  updatecli:
+    runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Updatecli
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatecli@3bbbfc459dd15452e68e3cefcbc56596d88d71ee # v19.15.0
+
+      - name: Run Updatecli in ${{ env.UPDATECLI_MODE }} mode
+        run: updatecli pipeline ${{ env.UPDATECLI_MODE }}
+        env:
+          UPDATECLI_GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+          UPDATECLI_GITHUB_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+          UPDATECLI_GITHUB_EMAIL: ${{ vars.BOT_GITHUB_EMAIL }}
+          UPDATECLI_MODE: ${{ github.event_name == 'pull_request' && 'diff' || 'apply' }}

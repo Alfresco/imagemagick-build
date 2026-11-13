@@ -32,14 +32,20 @@ Each format's `config.json` (`{base_image, target_arch, nexus_classifier}` list)
 
 ## Release process
 
-1. Raise a PR bumping [`imagemagick-version`](imagemagick-version) (and creating/updating any needed `after-checkout-*.sh` overrides for the new version) and [`release-version`](release-version) — reset `release-version` to `1` when `imagemagick-version` changes, otherwise increment it.
+1. Updatecli opens a draft PR for each new ImageMagick 7 release (see "Automated bumps" below). Otherwise, raise a PR by hand bumping [`imagemagick-version`](imagemagick-version) (and creating/updating any needed `after-checkout-*.sh` overrides for the new version) and [`release-version`](release-version) — reset `release-version` to `1` when `imagemagick-version` changes, otherwise increment it.
 2. Once merged, tag: `git tag -s vN.N.N -m vN.N.N && git push --tags origin vN.N.N`.
 3. Draft a [new release](https://github.com/Alfresco/imagemagick-build/releases/new) from that tag using "Generate release notes".
 4. The tag push triggers `deploy_rpms`/`deploy_deb` in the workflow (gated on `refs/tags/v*`), publishing to Nexus with version `{imagemagick-version}-ci-{release-version}`.
 
 ## CI workflow (`.github/workflows/build.yml`)
 
-Triggered on push (except changes to README.md, AGENTS.md, CLAUDE.md, or .github/dependabot.yml). Per format: `configure` (reads `config.json`) → `build_{rpms,deb}` (matrix, ARM jobs run on `ubuntu-24.04-arm`, x86_64 on `ubuntu-latest`) → `test_{rpms,deb}` → `deploy_{rpms,deb}` (tag-gated, `max-parallel: 1`). GitHub Actions are SHA-pinned.
+Triggered on push (except changes to README.md, AGENTS.md, CLAUDE.md, .github/dependabot.yml, or the updatecli and advisory files: `updatecli.d/`, `.github/scripts/`, `.github/workflows/updatecli.yml`, `.github/workflows/bump-advisories.yml`). Per format: `configure` (reads `config.json`) → `build_{rpms,deb}` (matrix, ARM jobs run on `ubuntu-24.04-arm`, x86_64 on `ubuntu-latest`) → `test_{rpms,deb}` → `deploy_{rpms,deb}` (tag-gated, `max-parallel: 1`). GitHub Actions are SHA-pinned.
+
+## Automated bumps
+
+- `.github/workflows/updatecli.yml` runs [`updatecli.d/imagemagick.yml`](updatecli.d/imagemagick.yml) every Monday. It opens a draft PR when ImageMagick publishes a newer 7.x tag. `.github/scripts/bump-imagemagick.sh` does the file changes: it writes `imagemagick-version`, resets `release-version` to `1`, and copies the `after-checkout-*-{old version}.sh` overrides to the new version name (the entrypoints only look for an override named after the version they build). CI on that PR shows whether the copied overrides still apply.
+- `.github/workflows/bump-advisories.yml` runs on any PR that changes `imagemagick-version`. It posts one comment listing the ImageMagick security advisories fixed between the old and new version, and adds the `security` label when there are any. The filter is `.github/scripts/fixed-advisories.jq`.
+- Both scripts have tests next to them (`.github/scripts/test-*.sh`), run by `updatecli.yml` on PRs.
 
 ## Packaging install paths
 

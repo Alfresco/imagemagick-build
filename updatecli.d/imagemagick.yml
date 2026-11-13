@@ -1,0 +1,48 @@
+name: ImageMagick version update pipeline
+
+scms:
+  imagemagickBuildRepo:
+    kind: github
+    spec:
+      user: '{{ requiredEnv "UPDATECLI_GITHUB_USERNAME" }}'
+      email: '{{ requiredEnv "UPDATECLI_GITHUB_EMAIL" }}'
+      username: '{{ requiredEnv "UPDATECLI_GITHUB_USERNAME" }}'
+      owner: Alfresco
+      repository: imagemagick-build
+      branch: main
+      token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: imagemagickBuildRepo
+    spec:
+      title: "Bump ImageMagick version"
+      description: "Freshly served by updatecli"
+      labels:
+        - updatecli
+      draft: true
+
+sources:
+  imagemagickVersion:
+    name: Latest ImageMagick 7 release
+    kind: gittag
+    spec:
+      url: https://github.com/ImageMagick/ImageMagick.git
+      versionfilter:
+        kind: regex/semver
+        regex: '^7\.\d+\.\d+-\d+$'
+        pattern: '>=0.0.0-0'
+
+targets:
+  bumpImagemagick:
+    name: Bump imagemagick-version, reset release-version and carry the overrides over
+    kind: shell
+    scmid: imagemagickBuildRepo
+    sourceid: imagemagickVersion
+    spec:
+      command: ./.github/scripts/bump-imagemagick.sh
+      changedif:
+        kind: console/output
+        spec:
+          onsuccess: true

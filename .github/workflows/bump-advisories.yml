@@ -1,0 +1,68 @@
+---
+name: ImageMagick bump advisories
+
+on:
+  pull_request:
+    paths:
+      - "imagemagick-version"
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  advisories:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: List the security advisories the bump fixes
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GH_TOKEN: ${{ github.token }}
+          MAX_ROWS: "150"
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          git fetch --depth=1 origin "$BASE_SHA"
+          OLD=$(git show "$BASE_SHA:imagemagick-version" | tr -d '[:space:]')
+          NEW=$(tr -d '[:space:]' < imagemagick-version)
+
+          ROWS=$(gh api --paginate '/repos/ImageMagick/ImageMagick/security-advisories?per_page=100' \
+            | jq -s 'add' \
+            | jq -r --arg old "$OLD" --arg new "$NEW" -f .github/scripts/fixed-advisories.jq)
+          COUNT=$(printf '%s' "$ROWS" | grep -c . || true)
+
+          {
+            echo "<!-- imagemagick-advisories -->"
+            echo "### ImageMagick $OLD -> $NEW"
+            echo
+            if [ "$COUNT" -gt 0 ]; then
+              echo "This bump fixes $COUNT published [security advisories](https://github.com/ImageMagick/ImageMagick/security/advisories)."
+              echo
+              echo "| Advisory | CVE | Severity | Summary | Fixed in |"
+              echo "| --- | --- | --- | --- | --- |"
+              printf '%s\n' "$ROWS" | head -n "$MAX_ROWS"
+              if [ "$COUNT" -gt "$MAX_ROWS" ]; then
+                echo
+                echo "And $((COUNT - MAX_ROWS)) more, see the link above."
+              fi
+            else
+              echo "No published security advisory is fixed between these versions."
+            fi
+          } > body.md
+
+          COMMENT_ID=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" --paginate \
+            --jq '.[] | select(.body | startswith("<!-- imagemagick-advisories -->")) | .id' | head -n 1)
+          if [ -n "$COMMENT_ID" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$COMMENT_ID" -F body=@body.md > /dev/null
+          else
+            gh pr comment "$PR_NUMBER" --body-file body.md
+          fi
+
+          if [ "$COUNT" -gt 0 ]; then
+            gh label create security --description "Fixes security vulnerabilities" --color d93f0b 2> /dev/null || true
+            gh pr edit "$PR_NUMBER" --add-label security
+          else
+            gh pr edit "$PR_NUMBER" --remove-label security 2> /dev/null || true
+          fi
