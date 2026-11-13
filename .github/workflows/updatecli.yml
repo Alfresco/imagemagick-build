@@ -37,8 +37,8 @@ jobs:
         with:
           client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
-          permission-contents: write
-          permission-pull-requests: write
+          permission-contents: ${{ github.event_name == 'pull_request' && 'read' || 'write' }}
+          permission-pull-requests: ${{ github.event_name == 'pull_request' && 'read' || 'write' }}
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 

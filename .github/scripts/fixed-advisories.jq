@@ -8,15 +8,14 @@ def patched:
   [ .vulnerabilities[]?.patched_versions // empty
     | split(",")[]
     | gsub("^\\s+|\\s+$"; "")
-    | select(startswith("7.")) ]
-  | first;
+    | select(startswith("7.")) ];
 
 ($old | vkey) as $from
 | ($new | vkey) as $to
 | [ .[]
     | select(.state == "published" and .withdrawn_at == null)
-    | (patched) as $fixed
-    | select($fixed != null and ($fixed | vkey) > $from and ($fixed | vkey) <= $to)
+    | ([patched[] | select((vkey) > $from and (vkey) <= $to)] | first) as $fixed
+    | select($fixed != null)
     | {ghsa: .ghsa_id, url: .html_url, cve: (.cve_id // "-"), sev: .severity,
        summary: (.summary | gsub("\\|"; "\\|") | gsub("\\s+"; " ")), fixed: $fixed} ]
 | sort_by(.fixed | vkey)

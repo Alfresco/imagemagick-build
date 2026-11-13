@@ -33,6 +33,11 @@ assert_eq "lists nothing when no advisory falls in the range" "" "$(ids 7.1.2-35
 assert_eq "uses the 7.x entry when an advisory patches several lines" \
   "GHSA-new2 " "$(ids 7.1.2-33 7.1.2-34)"
 
+assert_eq "matches an advisory patched on several 7.x lines against the line being bumped" \
+  "GHSA-multi-entries GHSA-multi-string " "$(ids 7.1.2-36 7.1.2-40)"
+assert_eq "also matches an older 7.x line when the bump crosses it" \
+  "GHSA-multi-entries GHSA-multi-string " "$(ids 7.0.10 7.0.11)"
+
 ROW=$(jq -r --arg old 7.1.2-31 --arg new 7.1.2-35 -f "$FILTER" "$FIXTURE" | grep GHSA-new1)
 assert_eq "renders a table row with link, CVE, severity, summary and fixed version" \
   "| [GHSA-new1](https://github.com/ImageMagick/ImageMagick/security/advisories/GHSA-new1) | CVE-2026-0001 | high | Heap overflow \\| in PNG | 7.1.2-35 |" "$ROW"

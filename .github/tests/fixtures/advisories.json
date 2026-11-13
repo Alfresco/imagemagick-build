@@ -19,5 +19,11 @@
    "vulnerabilities": [{"patched_versions": "7.1.2-35"}]},
   {"ghsa_id": "GHSA-unpatched", "cve_id": null, "severity": "low", "state": "published", "withdrawn_at": null,
    "html_url": "u", "summary": "no patched version",
-   "vulnerabilities": [{"patched_versions": null}]}
+   "vulnerabilities": [{"patched_versions": null}]},
+  {"ghsa_id": "GHSA-multi-string", "cve_id": null, "severity": "medium", "state": "published", "withdrawn_at": null,
+   "html_url": "u", "summary": "patched on two 7.x lines, listed in one field",
+   "vulnerabilities": [{"patched_versions": "7.0.11, 7.1.2-40"}]},
+  {"ghsa_id": "GHSA-multi-entries", "cve_id": null, "severity": "medium", "state": "published", "withdrawn_at": null,
+   "html_url": "u", "summary": "patched on two 7.x lines, listed in two entries",
+   "vulnerabilities": [{"patched_versions": "7.0.11"}, {"patched_versions": "7.1.2-40"}]}
 ]
