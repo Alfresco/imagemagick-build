@@ -52,8 +52,6 @@ jobs:
         run: updatecli pipeline ${{ env.UPDATECLI_MODE }}
         env:
           UPDATECLI_GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-          UPDATECLI_GITHUB_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-          UPDATECLI_GITHUB_EMAIL: ${{ vars.BOT_GITHUB_EMAIL }}
 
   advisories:
     runs-on: ubuntu-latest

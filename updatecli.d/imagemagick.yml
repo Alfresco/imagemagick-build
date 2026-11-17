@@ -4,13 +4,11 @@ scms:
   imagemagickBuildRepo:
     kind: github
     spec:
-      user: '{{ requiredEnv "UPDATECLI_GITHUB_USERNAME" }}'
-      email: '{{ requiredEnv "UPDATECLI_GITHUB_EMAIL" }}'
-      username: '{{ requiredEnv "UPDATECLI_GITHUB_USERNAME" }}'
       owner: Alfresco
       repository: imagemagick-build
       branch: main
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
+      commitusingapi: true
 
 actions:
   default:
