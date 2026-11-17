@@ -32,7 +32,7 @@ Each format's `config.json` (`{base_image, target_arch, nexus_classifier}` list)
 
 ## Release process
 
-1. Updatecli opens a draft PR for each new ImageMagick 7 release (see "Automated bumps" below). Otherwise, raise a PR by hand bumping [`imagemagick-version`](imagemagick-version) (adjusting the `after-checkout-*.sh` hooks if the new version needs it) and [`release-version`](release-version) — reset `release-version` to `1` when `imagemagick-version` changes, otherwise increment it.
+1. Updatecli opens a PR for each new ImageMagick 7 release (see "Automated bumps" below). Otherwise, raise a PR by hand bumping [`imagemagick-version`](imagemagick-version) (adjusting the `after-checkout-*.sh` hooks if the new version needs it) and [`release-version`](release-version) — reset `release-version` to `1` when `imagemagick-version` changes, otherwise increment it.
 2. Once merged, tag: `git tag -s vN.N.N -m vN.N.N && git push --tags origin vN.N.N`.
 3. Draft a [new release](https://github.com/Alfresco/imagemagick-build/releases/new) from that tag using "Generate release notes".
 4. The tag push triggers `deploy_rpms`/`deploy_deb` in the workflow (gated on `refs/tags/v*`), publishing to Nexus with version `{imagemagick-version}-ci-{release-version}`.
@@ -43,7 +43,7 @@ Triggered on push (except changes to README.md, AGENTS.md, CLAUDE.md, .github/de
 
 ## Automated bumps
 
-- `.github/workflows/updatecli.yml` runs [`updatecli.d/imagemagick.yml`](updatecli.d/imagemagick.yml) every Monday. It opens a draft PR, titled with the target version and with review requested from `Alfresco/ops-readiness-performance`, when ImageMagick publishes a newer 7.x tag. `.github/scripts/bump-imagemagick.sh` does the file changes: it writes `imagemagick-version` and resets `release-version` to `1`. CI on that PR shows whether the hooks still apply to the new version.
+- `.github/workflows/updatecli.yml` runs [`updatecli.d/imagemagick.yml`](updatecli.d/imagemagick.yml) every Monday. It opens a PR, ready for review, titled with the target version and with review requested from `Alfresco/ops-readiness-performance`, when ImageMagick publishes a newer 7.x tag. `.github/scripts/bump-imagemagick.sh` does the file changes: it writes `imagemagick-version` and resets `release-version` to `1`. CI on that PR shows whether the hooks still apply to the new version.
 - The `advisories` job of the same workflow runs on any PR that changes `imagemagick-version`. It posts one comment listing the ImageMagick security advisories fixed between the old and new version, and adds the `security` label when there are any. On PRs from forks the token is read-only, so it writes the report to the job summary instead. The comment opens with a per-severity count (`.github/scripts/advisory-summary.jq`) followed by the advisories, most severe first (`.github/scripts/fixed-advisories.jq`). Both share the matching logic in `.github/scripts/advisories.jq`.
 - Both scripts have tests in `.github/tests/`, run by the `test_scripts` job of `updatecli.yml` on PRs.
 
