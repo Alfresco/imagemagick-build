@@ -1,5 +1,5 @@
 #!/bin/bash -e
-# Tests for fixed-advisories.jq against a small advisory fixture, no network needed.
+# Tests for fixed-advisories.jq and advisory-summary.jq against a small advisory fixture, no network needed.
 set -o pipefail
 
 BASE_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
@@ -8,20 +8,19 @@ FIXTURE="$BASE_DIR/fixtures/advisories.json"
 # shellcheck source=SCRIPTDIR/lib.sh
 source "$BASE_DIR/lib.sh"
 
-rows() {
-  jq -r -L "$SCRIPTS" --arg old "$1" --arg new "$2" -f "$SCRIPTS/fixed-advisories.jq" "$FIXTURE"
+report() {
+  jq -r -L "$SCRIPTS" --arg old "$2" --arg new "$3" -f "$SCRIPTS/$1" "$FIXTURE"
 }
 
-summary() {
-  jq -r -L "$SCRIPTS" --arg old "$1" --arg new "$2" -f "$SCRIPTS/advisory-summary.jq" "$FIXTURE"
-}
+rows() { report fixed-advisories.jq "$@"; }
+summary() { report advisory-summary.jq "$@"; }
 
 ordered_ids() {
   rows "$1" "$2" | grep -o '^| \[GHSA-[a-z0-9-]*' | cut -c4- | tr '\n' ' '
 }
 
 ids() {
-  rows "$1" "$2" | grep -o '^| \[GHSA-[a-z0-9-]*' | cut -c4- | sort | tr '\n' ' '
+  ordered_ids "$1" "$2" | tr ' ' '\n' | sort | tr '\n' ' '
 }
 
 assert_eq "lists advisories fixed after the old version, up to and including the new one" \
@@ -42,7 +41,6 @@ assert_eq "renders a table row with link, CVE, severity, summary and fixed versi
   "| [GHSA-new1](https://github.com/ImageMagick/ImageMagick/security/advisories/GHSA-new1) | CVE-2026-0001 | high | Heap overflow \\| in PNG | 7.1.2-35 |" "$(grep GHSA-new1 <<< "$ROWS")"
 assert_eq "shows a dash when an advisory has no CVE" \
   "| [GHSA-new2](https://github.com/ImageMagick/ImageMagick/security/advisories/GHSA-new2) | - | low | Leak in TIFF | 7.1.2-34 |" "$(grep GHSA-new2 <<< "$ROWS")"
-
 
 assert_eq "lists the most severe advisories first, then by fixed version" \
   "GHSA-critical GHSA-new1 GHSA-ten-vs-nine GHSA-at-old GHSA-multi-string GHSA-multi-entries GHSA-new2 GHSA-too-new " \
