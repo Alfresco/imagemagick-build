@@ -3,6 +3,7 @@ ARG BASE_IMAGE=rockylinux/rockylinux:9
 FROM ${BASE_IMAGE}
 
 RUN <<EOF
+set -e
 yum update -y
 yum install -y epel-release
 source /etc/os-release

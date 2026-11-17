@@ -3,6 +3,7 @@ ARG BASE_IMAGE=rockylinux/rockylinux:9
 FROM ${BASE_IMAGE}
 
 RUN <<EOF
+set -e
 dnf update -y
 dnf install -y epel-release git make yum-utils rpm-build
 dnf group install -y "Development Tools"
@@ -13,6 +14,7 @@ ARG BASE_IMAGE
 ENV BASE_IMAGE=${BASE_IMAGE}
 
 RUN <<EOF
+set -e
 source /etc/os-release
 case "$VERSION_ID" in
     9*)
