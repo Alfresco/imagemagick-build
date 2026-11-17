@@ -21,7 +21,6 @@ actions:
         - updatecli
       reviewers:
         - Alfresco/ops-readiness-performance
-      draft: true
 
 sources:
   imagemagickVersion:
