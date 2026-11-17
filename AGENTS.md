@@ -44,7 +44,7 @@ Triggered on push (except changes to README.md, AGENTS.md, CLAUDE.md, .github/de
 ## Automated bumps
 
 - `.github/workflows/updatecli.yml` runs [`updatecli.d/imagemagick.yml`](updatecli.d/imagemagick.yml) every Monday. It opens a draft PR when ImageMagick publishes a newer 7.x tag. `.github/scripts/bump-imagemagick.sh` does the file changes: it writes `imagemagick-version`, resets `release-version` to `1`, and copies the `after-checkout-*-{old version}.sh` overrides to the new version name (the entrypoints only look for an override named after the version they build). CI on that PR shows whether the copied overrides still apply.
-- The `advisories` job of the same workflow runs on any PR that changes `imagemagick-version`. It posts one comment listing the ImageMagick security advisories fixed between the old and new version, and adds the `security` label when there are any. The filter is `.github/scripts/fixed-advisories.jq`.
+- The `advisories` job of the same workflow runs on any PR that changes `imagemagick-version`. It posts one comment listing the ImageMagick security advisories fixed between the old and new version, and adds the `security` label when there are any. On PRs from forks the token is read-only, so it writes the report to the job summary instead. The filter is `.github/scripts/fixed-advisories.jq`.
 - Both scripts have tests in `.github/tests/`, run by the `test_scripts` job of `updatecli.yml` on PRs.
 
 ## Packaging install paths
