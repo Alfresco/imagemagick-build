@@ -6,19 +6,8 @@ BASE_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 BUMP="$BASE_DIR/../scripts/bump-imagemagick.sh"
 WORK_DIR=$(mktemp -d)
 trap 'rm -rf "$WORK_DIR"' EXIT
-FAILURES=0
-
-assert_eq() {
-  local desc="$1" expected="$2" actual="$3"
-  if [ "$expected" = "$actual" ]; then
-    echo "ok - $desc"
-  else
-    echo "FAIL - $desc"
-    echo "  expected: $expected"
-    echo "  actual:   $actual"
-    FAILURES=$((FAILURES + 1))
-  fi
-}
+# shellcheck source=SCRIPTDIR/lib.sh
+source "$BASE_DIR/lib.sh"
 
 new_root() {
   local root
@@ -58,8 +47,4 @@ echo "hand-edited" > "$ROOT/debs/after-checkout-ubuntu2404-7.1.2-35.sh"
 assert_eq "an existing override of the new version is not overwritten" \
   "hand-edited" "$(cat "$ROOT/debs/after-checkout-ubuntu2404-7.1.2-35.sh")"
 
-if [ "$FAILURES" -gt 0 ]; then
-  echo "$FAILURES test(s) failed"
-  exit 1
-fi
-echo "All tests passed."
+finish

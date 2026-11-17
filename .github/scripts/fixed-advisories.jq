@@ -15,8 +15,6 @@ def patched:
 | [ .[]
     | select(.state == "published" and .withdrawn_at == null)
     | first(patched | select(vkey | . > $from and . <= $to)) as $fixed
-    | {ghsa: .ghsa_id, url: .html_url, cve: (.cve_id // "-"), sev: .severity,
-       summary: (.summary | gsub("\\|"; "\\|") | gsub("\\s+"; " ")), fixed: $fixed} ]
-| sort_by(.fixed | vkey)
-| .[]
-| "| [\(.ghsa)](\(.url)) | \(.cve) | \(.sev) | \(.summary) | \(.fixed) |"
+    | {key: ($fixed | vkey),
+       row: "| [\(.ghsa_id)](\(.html_url)) | \(.cve_id // "-") | \(.severity) | \(.summary | gsub("\\|"; "\\|") | gsub("\\s+"; " ")) | \($fixed) |"} ]
+| sort_by(.key)[].row

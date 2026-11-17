@@ -5,19 +5,8 @@ set -o pipefail
 BASE_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 FILTER="$BASE_DIR/../scripts/fixed-advisories.jq"
 FIXTURE="$BASE_DIR/fixtures/advisories.json"
-FAILURES=0
-
-assert_eq() {
-  local desc="$1" expected="$2" actual="$3"
-  if [ "$expected" = "$actual" ]; then
-    echo "ok - $desc"
-  else
-    echo "FAIL - $desc"
-    echo "  expected: $expected"
-    echo "  actual:   $actual"
-    FAILURES=$((FAILURES + 1))
-  fi
-}
+# shellcheck source=SCRIPTDIR/lib.sh
+source "$BASE_DIR/lib.sh"
 
 rows() {
   jq -r --arg old "$1" --arg new "$2" -f "$FILTER" "$FIXTURE"
@@ -46,8 +35,4 @@ assert_eq "renders a table row with link, CVE, severity, summary and fixed versi
 assert_eq "shows a dash when an advisory has no CVE" \
   "| [GHSA-new2](https://github.com/ImageMagick/ImageMagick/security/advisories/GHSA-new2) | - | low | Leak in TIFF | 7.1.2-34 |" "$(grep GHSA-new2 <<< "$ROWS")"
 
-if [ "$FAILURES" -gt 0 ]; then
-  echo "$FAILURES test(s) failed"
-  exit 1
-fi
-echo "All tests passed."
+finish

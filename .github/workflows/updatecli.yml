@@ -72,6 +72,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           MAX_ROWS: "150"
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           OLD=$(gh api "repos/$GITHUB_REPOSITORY/contents/imagemagick-version?ref=$GITHUB_BASE_REF" \
             -H 'Accept: application/vnd.github.raw' | tr -d '[:space:]')
@@ -81,9 +82,8 @@ jobs:
             exit 0
           fi
 
-          ROWS=$(gh api --paginate '/repos/ImageMagick/ImageMagick/security-advisories?per_page=100' \
-            | jq -s 'add' \
-            | jq -r --arg old "$OLD" --arg new "$NEW" -f .github/scripts/fixed-advisories.jq)
+          ROWS=$(gh api --paginate '/repos/ImageMagick/ImageMagick/security-advisories?per_page=100' --jq '.[]' \
+            | jq -rs --arg old "$OLD" --arg new "$NEW" -f .github/scripts/fixed-advisories.jq)
           COUNT=$(printf '%s' "$ROWS" | grep -c . || true)
 
           {
@@ -106,7 +106,12 @@ jobs:
           } > body.md
 
           echo "changed=true" >> "$GITHUB_OUTPUT"
-          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+
+          if [ "$COUNT" -gt 0 ]; then
+            gh pr edit "$PR_NUMBER" --add-label security
+          else
+            gh pr edit "$PR_NUMBER" --remove-label security 2> /dev/null || true
+          fi
 
       - name: Find the previous advisories comment
         id: find-comment
@@ -126,16 +131,3 @@ jobs:
           body-path: body.md
           edit-mode: replace
 
-      - name: Label the pull request
-        if: steps.report.outputs.changed == 'true'
-        env:
-          COUNT: ${{ steps.report.outputs.count }}
-          GH_TOKEN: ${{ github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          if [ "$COUNT" -gt 0 ]; then
-            gh label create security --description "Fixes security vulnerabilities" --color d93f0b 2> /dev/null || true
-            gh pr edit "$PR_NUMBER" --add-label security
-          else
-            gh pr edit "$PR_NUMBER" --remove-label security 2> /dev/null || true
-          fi
