@@ -36,7 +36,7 @@ sources:
 
 targets:
   bumpImagemagick:
-    name: Bump imagemagick-version, reset release-version and carry the overrides over
+    name: Bump imagemagick-version and reset release-version
     kind: shell
     scmid: imagemagickBuildRepo
     sourceid: imagemagickVersion

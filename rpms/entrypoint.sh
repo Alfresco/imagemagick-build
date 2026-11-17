@@ -39,11 +39,14 @@ sed -i '/BuildRequires.*LibRaw/d; /--with-raw/d' ImageMagick.spec.in
 # A git checkout has no release tarball signature, and %prep never verifies it.
 sed -i '/^Source[0-9]*:.*\.asc$/d' ImageMagick.spec.in
 
-AFTER_CHECKOUT_HOOK_SCRIPT="../after-checkout-${BASE_IMAGE//:/}-$IMAGEMAGICK_VERSION.sh"
-# Run with bash: hooks committed through the GitHub API lose their exec bit.
-if [ -f "$AFTER_CHECKOUT_HOOK_SCRIPT" ]; then
-    bash -e "$AFTER_CHECKOUT_HOOK_SCRIPT"
-fi
+OS_ID="${BASE_IMAGE##*/}"
+OS_ID="${OS_ID//[:.]/}"
+# OS-wide hook, then an optional one for this ImageMagick version only.
+for hook in "../after-checkout-$OS_ID.sh" "../after-checkout-$OS_ID-$IMAGEMAGICK_VERSION.sh"; do
+    if [ -f "$hook" ]; then
+        bash -e "$hook"
+    fi
+done
 
 # Generate updated src.rpm
 ./configure
