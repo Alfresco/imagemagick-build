@@ -62,21 +62,24 @@ jobs:
       contents: read
       issues: write
       pull-requests: write
+    env:
+      MARKER: "<!-- imagemagick-advisories -->"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: List the security advisories the bump fixes
+        id: report
         env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
           GH_TOKEN: ${{ github.token }}
-          MARKER: "<!-- imagemagick-advisories -->"
           MAX_ROWS: "150"
-          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          git fetch --depth=1 origin "$BASE_SHA"
-          OLD=$(git show "$BASE_SHA:imagemagick-version" | tr -d '[:space:]')
+          OLD=$(gh api "repos/$GITHUB_REPOSITORY/contents/imagemagick-version?ref=$GITHUB_BASE_REF" \
+            -H 'Accept: application/vnd.github.raw' | tr -d '[:space:]')
           NEW=$(tr -d '[:space:]' < imagemagick-version)
-          [ "$OLD" = "$NEW" ] && exit 0
+          if [ "$OLD" = "$NEW" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
           ROWS=$(gh api --paginate '/repos/ImageMagick/ImageMagick/security-advisories?per_page=100' \
             | jq -s 'add' \
@@ -102,14 +105,34 @@ jobs:
             fi
           } > body.md
 
-          COMMENT_ID=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" --paginate \
-            --jq '.[] | select(.body | startswith(env.MARKER)) | .id' | head -n 1)
-          if [ -n "$COMMENT_ID" ]; then
-            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$COMMENT_ID" -F body=@body.md > /dev/null
-          else
-            gh pr comment "$PR_NUMBER" --body-file body.md
-          fi
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
 
+      - name: Find the previous advisories comment
+        id: find-comment
+        if: steps.report.outputs.changed == 'true'
+        uses: peter-evans/find-comment@b30e6a3c0ed37e7c023ccd3f1db5c6c0b0c23aad # v4.0.0
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: github-actions[bot]
+          body-includes: ${{ env.MARKER }}
+
+      - name: Post or update the advisories comment
+        if: steps.report.outputs.changed == 'true'
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          body-path: body.md
+          edit-mode: replace
+
+      - name: Label the pull request
+        if: steps.report.outputs.changed == 'true'
+        env:
+          COUNT: ${{ steps.report.outputs.count }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
           if [ "$COUNT" -gt 0 ]; then
             gh label create security --description "Fixes security vulnerabilities" --color d93f0b 2> /dev/null || true
             gh pr edit "$PR_NUMBER" --add-label security
