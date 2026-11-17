@@ -20,7 +20,7 @@ Packages are published to Alfresco's Nexus (`org.imagemagick:imagemagick-distrib
 Two parallel, near-identical build pipelines, one per packaging format:
 
 - `debs/` — Debian packaging. `Dockerfile` builds a container with `dpkg-dev`/`devscripts`/`equivs`; `entrypoint.sh` clones ImageMagick at the tag from `imagemagick-version`, copies in `debs/debian/*` control files, runs an optional `after-checkout-*.sh` hook, then `mk-build-deps -Bi && dpkg-buildpackage -b -uc`.
-- `rpms/` — RPM packaging. `Dockerfile` builds a container with `rpm-build`/`yum-utils` (plus RPM Fusion repos on EL8 for `libheif`); `entrypoint.sh` clones ImageMagick, strips `BuildRequires`/configure flags for LQR, Raqm, ghostscript (`gslib`), and LibRaw from `ImageMagick.spec.in`, runs an optional `after-checkout-*.sh` hook, builds an `.src.rpm` via `./configure && make dist-xz && make srpm`, then `yum-builddep` + `rpmbuild --rebuild`. It also asserts the built `ImageMagick-libs` RPM has no `libgs` (ghostscript) dependency before handing off to the test entrypoint.
+- `rpms/` — RPM packaging. `Dockerfile` builds a container with `rpm-build`/`yum-utils` (plus RPM Fusion repos on EL8 for `libheif`); `entrypoint.sh` clones ImageMagick, strips `BuildRequires`/configure flags for LQR, Raqm, ghostscript (`gslib`), and LibRaw and the `.tar.xz.asc` signature `Source` from `ImageMagick.spec.in`, runs an optional `after-checkout-*.sh` hook, builds an `.src.rpm` via `./configure && make dist-xz && make srpm`, then `yum-builddep` + `rpmbuild --rebuild`. It also asserts the built `ImageMagick-libs` RPM has no `libgs` (ghostscript) dependency before handing off to the test entrypoint.
 
 Each pipeline has its own `tests/` subdirectory (`Dockerfile` + `entrypoint.sh`) that installs the built package into a clean container and verifies `convert` works (PNG→JPG) and dependencies are sane.
 
@@ -28,7 +28,7 @@ Each format's `config.json` (`{base_image, target_arch, nexus_classifier}` list)
 
 ### Version-specific overrides
 
-`debs/after-checkout-{os}{ver}-{imagemagick-version}.sh` (e.g. `after-checkout-ubuntu2404-7.1.2-13.sh`) patch `debian/control`/`debian/rules` for OS-specific package name differences (e.g. `libtiff5`→`libtiff6` on Ubuntu 24.04, dropping `libraw-dev`, swapping `mime-support` for `mailcap,media-types`). RPM side uses the same naming convention (`after-checkout-{base_image sans colons}-{imagemagick-version}.sh`) if an OS needs a patch beyond the common LQR/Raqm/ghostscript/LibRaw strip already in `rpms/entrypoint.sh`. These scripts are optional — the entrypoints only run them `if [ -x ... ]`.
+`debs/after-checkout-{os}{ver}-{imagemagick-version}.sh` (e.g. `after-checkout-ubuntu2404-7.1.2-13.sh`) patch `debian/control`/`debian/rules` for OS-specific package name differences (e.g. `libtiff5`→`libtiff6` on Ubuntu 24.04, dropping `libraw-dev`, swapping `mime-support` for `mailcap,media-types`). RPM side uses the same naming convention (`after-checkout-{base_image sans colons}-{imagemagick-version}.sh`) if an OS needs a patch beyond the common LQR/Raqm/ghostscript/LibRaw strip already in `rpms/entrypoint.sh`. These scripts are optional — the entrypoints run them with `bash` when the file exists, so the exec bit doesn't matter (updatecli commits through the GitHub API, which drops it).
 
 ## Release process
 
@@ -43,8 +43,8 @@ Triggered on push (except changes to README.md, AGENTS.md, CLAUDE.md, .github/de
 
 ## Automated bumps
 
-- `.github/workflows/updatecli.yml` runs [`updatecli.d/imagemagick.yml`](updatecli.d/imagemagick.yml) every Monday. It opens a draft PR when ImageMagick publishes a newer 7.x tag. `.github/scripts/bump-imagemagick.sh` does the file changes: it writes `imagemagick-version`, resets `release-version` to `1`, and copies the `after-checkout-*-{old version}.sh` overrides to the new version name (the entrypoints only look for an override named after the version they build). CI on that PR shows whether the copied overrides still apply.
-- The `advisories` job of the same workflow runs on any PR that changes `imagemagick-version`. It posts one comment listing the ImageMagick security advisories fixed between the old and new version, and adds the `security` label when there are any. On PRs from forks the token is read-only, so it writes the report to the job summary instead. The filter is `.github/scripts/fixed-advisories.jq`.
+- `.github/workflows/updatecli.yml` runs [`updatecli.d/imagemagick.yml`](updatecli.d/imagemagick.yml) every Monday. It opens a draft PR, titled with the target version and with review requested from `Alfresco/ops-readiness-performance`, when ImageMagick publishes a newer 7.x tag. `.github/scripts/bump-imagemagick.sh` does the file changes: it writes `imagemagick-version`, resets `release-version` to `1`, and copies the `after-checkout-*-{old version}.sh` overrides to the new version name (the entrypoints only look for an override named after the version they build). CI on that PR shows whether the copied overrides still apply.
+- The `advisories` job of the same workflow runs on any PR that changes `imagemagick-version`. It posts one comment listing the ImageMagick security advisories fixed between the old and new version, and adds the `security` label when there are any. On PRs from forks the token is read-only, so it writes the report to the job summary instead. The comment opens with a per-severity count (`.github/scripts/advisory-summary.jq`) followed by the advisories, most severe first (`.github/scripts/fixed-advisories.jq`). Both share the matching logic in `.github/scripts/advisories.jq`.
 - Both scripts have tests in `.github/tests/`, run by the `test_scripts` job of `updatecli.yml` on PRs.
 
 ## Packaging install paths

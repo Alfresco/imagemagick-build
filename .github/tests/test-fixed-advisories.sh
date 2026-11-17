@@ -3,13 +3,21 @@
 set -o pipefail
 
 BASE_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
-FILTER="$BASE_DIR/../scripts/fixed-advisories.jq"
+SCRIPTS="$BASE_DIR/../scripts"
 FIXTURE="$BASE_DIR/fixtures/advisories.json"
 # shellcheck source=SCRIPTDIR/lib.sh
 source "$BASE_DIR/lib.sh"
 
 rows() {
-  jq -r --arg old "$1" --arg new "$2" -f "$FILTER" "$FIXTURE"
+  jq -r -L "$SCRIPTS" --arg old "$1" --arg new "$2" -f "$SCRIPTS/fixed-advisories.jq" "$FIXTURE"
+}
+
+summary() {
+  jq -r -L "$SCRIPTS" --arg old "$1" --arg new "$2" -f "$SCRIPTS/advisory-summary.jq" "$FIXTURE"
+}
+
+ordered_ids() {
+  rows "$1" "$2" | grep -o '^| \[GHSA-[a-z0-9-]*' | cut -c4- | tr '\n' ' '
 }
 
 ids() {
@@ -34,5 +42,25 @@ assert_eq "renders a table row with link, CVE, severity, summary and fixed versi
   "| [GHSA-new1](https://github.com/ImageMagick/ImageMagick/security/advisories/GHSA-new1) | CVE-2026-0001 | high | Heap overflow \\| in PNG | 7.1.2-35 |" "$(grep GHSA-new1 <<< "$ROWS")"
 assert_eq "shows a dash when an advisory has no CVE" \
   "| [GHSA-new2](https://github.com/ImageMagick/ImageMagick/security/advisories/GHSA-new2) | - | low | Leak in TIFF | 7.1.2-34 |" "$(grep GHSA-new2 <<< "$ROWS")"
+
+
+assert_eq "lists the most severe advisories first, then by fixed version" \
+  "GHSA-critical GHSA-new1 GHSA-ten-vs-nine GHSA-at-old GHSA-multi-string GHSA-multi-entries GHSA-new2 GHSA-too-new " \
+  "$(ordered_ids 7.1.2-8 7.1.2-40)"
+
+assert_eq "summarizes the fixed advisories per severity, with a total" \
+  "| Severity | Count |
+| --- | ---: |
+| critical | 0 |
+| high | 1 |
+| medium | 0 |
+| low | 1 |
+| **Total** | **2** |" "$(summary 7.1.2-31 7.1.2-35)"
+assert_eq "counts every severity in the summary" \
+  "| critical | 1 |
+| high | 1 |
+| medium | 4 |
+| low | 2 |
+| **Total** | **8** |" "$(summary 7.1.2-8 7.1.2-40 | tail -n 5)"
 
 finish

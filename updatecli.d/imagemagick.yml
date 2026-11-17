@@ -15,10 +15,12 @@ actions:
     kind: github/pullrequest
     scmid: imagemagickBuildRepo
     spec:
-      title: "Bump ImageMagick version"
+      title: 'Bump ImageMagick to {{ source "imagemagickVersion" }}'
       description: "Freshly served by updatecli"
       labels:
         - updatecli
+      reviewers:
+        - Alfresco/ops-readiness-performance
       draft: true
 
 sources:
