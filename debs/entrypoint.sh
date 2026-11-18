@@ -19,11 +19,15 @@ mv debian ImageMagick/
 
 cd ImageMagick
 
-AFTER_CHECKOUT_HOOK_SCRIPT="../after-checkout-${BASE_IMAGE//[:.]/}-$IMAGEMAGICK_VERSION.sh"
+OS_ID="${BASE_IMAGE##*/}"
+OS_ID="${OS_ID//[:.]/}"
+# OS-wide hook, then an optional one for this ImageMagick version only.
 # Run with bash: hooks committed through the GitHub API lose their exec bit.
-if [ -f "$AFTER_CHECKOUT_HOOK_SCRIPT" ]; then
-    bash -e "$AFTER_CHECKOUT_HOOK_SCRIPT"
-fi
+for hook in "../after-checkout-$OS_ID.sh" "../after-checkout-$OS_ID-$IMAGEMAGICK_VERSION.sh"; do
+    if [ -f "$hook" ]; then
+        bash -e "$hook"
+    fi
+done
 
 sed -i "1s/\${version}/$IMAGEMAGICK_VERSION/g" "debian/changelog" "debian/README.Debian"
 

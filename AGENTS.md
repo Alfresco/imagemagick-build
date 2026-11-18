@@ -26,13 +26,13 @@ Each pipeline has its own `tests/` subdirectory (`Dockerfile` + `entrypoint.sh`)
 
 Each format's `config.json` (`{base_image, target_arch, nexus_classifier}` list) is the build matrix consumed by `.github/workflows/build.yml`'s `configure` job — add a new OS/arch combination there.
 
-### Version-specific overrides
+### OS-specific hooks
 
-`debs/after-checkout-{os}{ver}-{imagemagick-version}.sh` (e.g. `after-checkout-ubuntu2404-7.1.2-13.sh`) patch `debian/control`/`debian/rules` for OS-specific package name differences (e.g. `libtiff5`→`libtiff6` on Ubuntu 24.04, dropping `libraw-dev`, swapping `mime-support` for `mailcap,media-types`). RPM side uses the same naming convention (`after-checkout-{base_image sans colons}-{imagemagick-version}.sh`) if an OS needs a patch beyond the common LQR/Raqm/ghostscript/LibRaw strip already in `rpms/entrypoint.sh`. These scripts are optional — the entrypoints run them with `bash` when the file exists, so the exec bit doesn't matter (updatecli commits through the GitHub API, which drops it).
+`{debs,rpms}/after-checkout-{os}.sh` patch the packaging for one OS, whatever the ImageMagick version. `{os}` is the base image name without its registry path, `:` or `.` (`ubuntu2404`, `rockylinux8`). `debs/after-checkout-ubuntu2404.sh` patches `debian/control` for package names that differ on Ubuntu 24.04 (`libtiff5`→`libtiff6`, dropping `libraw-dev`, swapping `mime-support` for `mailcap,media-types`). When a patch applies to one ImageMagick version only, put it in `after-checkout-{os}-{imagemagick-version}.sh`; it runs after the OS-wide hook. On the RPM side, add a hook only if an OS needs more than the common LQR/Raqm/ghostscript/LibRaw strip already in `rpms/entrypoint.sh`. All hooks are optional. The entrypoints run them with `bash -e` when the file exists, so the exec bit doesn't matter.
 
 ## Release process
 
-1. Updatecli opens a PR for each new ImageMagick 7 release (see "Automated bumps" below). Otherwise, raise a PR by hand bumping [`imagemagick-version`](imagemagick-version) (and creating/updating any needed `after-checkout-*.sh` overrides for the new version) and [`release-version`](release-version) — reset `release-version` to `1` when `imagemagick-version` changes, otherwise increment it.
+1. Updatecli opens a PR for each new ImageMagick 7 release (see "Automated bumps" below). Otherwise, raise a PR by hand bumping [`imagemagick-version`](imagemagick-version) (adjusting the `after-checkout-*.sh` hooks if the new version needs it) and [`release-version`](release-version) — reset `release-version` to `1` when `imagemagick-version` changes, otherwise increment it.
 2. Once merged, tag: `git tag -s vN.N.N -m vN.N.N && git push --tags origin vN.N.N`.
 3. Draft a [new release](https://github.com/Alfresco/imagemagick-build/releases/new) from that tag using "Generate release notes".
 4. The tag push triggers `deploy_rpms`/`deploy_deb` in the workflow (gated on `refs/tags/v*`), publishing to Nexus with version `{imagemagick-version}-ci-{release-version}`.
