@@ -42,6 +42,7 @@ sed -i '/^Source[0-9]*:.*\.asc$/d' ImageMagick.spec.in
 OS_ID="${BASE_IMAGE##*/}"
 OS_ID="${OS_ID//[:.]/}"
 # OS-wide hook, then an optional one for this ImageMagick version only.
+# Run with bash: hooks committed through the GitHub API lose their exec bit.
 for hook in "../after-checkout-$OS_ID.sh" "../after-checkout-$OS_ID-$IMAGEMAGICK_VERSION.sh"; do
     if [ -f "$hook" ]; then
         bash -e "$hook"
