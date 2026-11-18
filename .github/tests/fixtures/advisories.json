@@ -25,5 +25,8 @@
    "vulnerabilities": [{"patched_versions": "7.0.11, 7.1.2-40"}]},
   {"ghsa_id": "GHSA-multi-entries", "cve_id": null, "severity": "medium", "state": "published", "withdrawn_at": null,
    "html_url": "u", "summary": "patched on two 7.x lines, listed in two entries",
-   "vulnerabilities": [{"patched_versions": "7.0.11"}, {"patched_versions": "7.1.2-40"}]}
+   "vulnerabilities": [{"patched_versions": "7.0.11"}, {"patched_versions": "7.1.2-40"}]},
+  {"ghsa_id": "GHSA-critical", "cve_id": null, "severity": "critical", "state": "published", "withdrawn_at": null,
+   "html_url": "u", "summary": "the most severe advisory, listed last on purpose",
+   "vulnerabilities": [{"patched_versions": "7.1.2-20"}]}
 ]

@@ -36,9 +36,13 @@ sed -i '/BuildRequires.*ghostscript-devel/d; s/--with-gslib/--without-gslib/' Im
 # Drop LibRaw support which is not compatible with the current version of ImageMagick
 sed -i '/BuildRequires.*LibRaw/d; /--with-raw/d' ImageMagick.spec.in
 
+# A git checkout has no release tarball signature, and %prep never verifies it.
+sed -i '/^Source[0-9]*:.*\.asc$/d' ImageMagick.spec.in
+
 AFTER_CHECKOUT_HOOK_SCRIPT="../after-checkout-${BASE_IMAGE//:/}-$IMAGEMAGICK_VERSION.sh"
-if [ -x "$AFTER_CHECKOUT_HOOK_SCRIPT" ]; then
-    "$AFTER_CHECKOUT_HOOK_SCRIPT"
+# Run with bash: hooks committed through the GitHub API lose their exec bit.
+if [ -f "$AFTER_CHECKOUT_HOOK_SCRIPT" ]; then
+    bash -e "$AFTER_CHECKOUT_HOOK_SCRIPT"
 fi
 
 # Generate updated src.rpm

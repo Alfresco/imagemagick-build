@@ -20,8 +20,9 @@ mv debian ImageMagick/
 cd ImageMagick
 
 AFTER_CHECKOUT_HOOK_SCRIPT="../after-checkout-${BASE_IMAGE//[:.]/}-$IMAGEMAGICK_VERSION.sh"
-if [ -x "$AFTER_CHECKOUT_HOOK_SCRIPT" ]; then
-    "$AFTER_CHECKOUT_HOOK_SCRIPT"
+# Run with bash: hooks committed through the GitHub API lose their exec bit.
+if [ -f "$AFTER_CHECKOUT_HOOK_SCRIPT" ]; then
+    bash -e "$AFTER_CHECKOUT_HOOK_SCRIPT"
 fi
 
 sed -i "1s/\${version}/$IMAGEMAGICK_VERSION/g" "debian/changelog" "debian/README.Debian"

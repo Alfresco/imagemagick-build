@@ -46,6 +46,7 @@ jobs:
           private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
           permission-contents: write
           permission-pull-requests: write
+          permission-members: read
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -86,8 +87,12 @@ jobs:
             exit 0
           fi
 
-          ROWS=$(gh api --paginate '/repos/ImageMagick/ImageMagick/security-advisories?per_page=100' --jq '.[]' \
-            | jq -rs --arg old "$OLD" --arg new "$NEW" -f .github/scripts/fixed-advisories.jq)
+          gh api --paginate '/repos/ImageMagick/ImageMagick/security-advisories?per_page=100' --jq '.[]' \
+            | jq -s . > advisories.json
+          report() {
+            jq -r -L .github/scripts --arg old "$OLD" --arg new "$NEW" -f ".github/scripts/$1" advisories.json
+          }
+          ROWS=$(report fixed-advisories.jq)
           COUNT=$(printf '%s' "$ROWS" | grep -c . || true)
 
           {
@@ -96,6 +101,8 @@ jobs:
             echo
             if [ "$COUNT" -gt 0 ]; then
               echo "This bump fixes $COUNT published [security advisories](https://github.com/ImageMagick/ImageMagick/security/advisories)."
+              echo
+              report advisory-summary.jq
               echo
               echo "| Advisory | CVE | Severity | Summary | Fixed in |"
               echo "| --- | --- | --- | --- | --- |"
