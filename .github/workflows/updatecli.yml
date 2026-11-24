@@ -40,7 +40,7 @@ jobs:
       - name: Generate app token
         id: app-token
         if: github.event_name != 'pull_request'
-        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        uses: actions/create-github-app-token@f418cff399f7aef4c2f0ad47e25ca7a6abbdd6fc # v3.4.0
         with:
           client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
@@ -51,7 +51,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install Updatecli
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatecli@3bbbfc459dd15452e68e3cefcbc56596d88d71ee # v19.15.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatecli@16298278308f674c76542d61658da190e975e31c # v19.16.0
 
       - name: Run Updatecli in ${{ env.UPDATECLI_MODE }} mode
         run: updatecli pipeline ${{ env.UPDATECLI_MODE }}
